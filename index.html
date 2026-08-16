@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海风作证 · 我们结婚啦</title>
+    <meta name="description" content="2026年10月3日中午，诚邀您来见证我们的海边婚礼。">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="opening-art.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Ma+Shan+Zheng&family=Playfair+Display:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // 设备检测
+        (function() {
+            var ua = navigator.userAgent.toLowerCase();
+            var isMobile = /iphone|ipod|android.*mobile|windows phone|blackberry|opera mini|opera mobi/i.test(ua);
+            var isTablet = /ipad|android(?!.*mobile)|tablet|kindle|silk|playbook/i.test(ua);
+            var body = document.documentElement;
+
+            function updateDeviceClass() {
+                var narrowViewport = window.innerWidth <= 767;
+                var tabletViewport = window.innerWidth > 767 && window.innerWidth <= 1024;
+                var device = isMobile || narrowViewport ? 'mobile' : (isTablet || tabletViewport ? 'tablet' : 'desktop');
+                body.classList.remove('device-mobile', 'device-tablet', 'device-desktop');
+                body.classList.add('device-' + device);
+                body.dataset.device = device;
+            }
+
+            updateDeviceClass();
+            
+            // 检测横竖屏
+            function checkOrientation() {
+                if (window.innerHeight > window.innerWidth) {
+                    body.classList.add('orientation-portrait');
+                    body.classList.remove('orientation-landscape');
+                } else {
+                    body.classList.add('orientation-landscape');
+                    body.classList.remove('orientation-portrait');
+                }
+            }
+            
+            checkOrientation();
+            window.addEventListener('resize', function() {
+                checkOrientation();
+                updateDeviceClass();
+            });
+        })();
+    </script>
+</head>
+<body>
+    <div class="invitation-container">
+        <div class="petals-container" id="petals"></div>
+        <div class="glow-bg">
+            <div class="glow glow-1"></div>
+            <div class="glow glow-2"></div>
+            <div class="glow glow-3"></div>
+            <div class="tide-lines" aria-hidden="true"></div>
+            <div class="film-dust" id="filmDust" aria-hidden="true"></div>
+        </div>
+
+        <div class="envelope-animation" id="envelope">
+            <div class="opening-sun" aria-hidden="true"></div>
+            <div class="beach-sketch" aria-hidden="true">
+                <svg viewBox="0 0 700 360" role="img" aria-label="新郎新娘牵手奔跑在海边的简笔画">
+                    <circle class="sketch-sun" cx="570" cy="70" r="32"></circle>
+                    <path class="sketch-horizon" d="M20 205 Q120 185 220 205 T420 205 T680 200"></path>
+                    <path class="sketch-wave" d="M25 238 Q75 220 125 238 T225 238 T325 238 T425 238 T525 238 T675 235"></path>
+                    <path class="sketch-wave sketch-wave-back" d="M5 260 Q60 245 115 260 T225 260 T335 260 T445 260 T555 260 T700 255"></path>
+                    <path class="sketch-sand" d="M18 300 Q150 280 270 300 T510 298 T690 292"></path>
+                    <g class="sketch-couple">
+                        <g class="sketch-bride">
+                            <path class="sketch-hair" d="M205 185 C190 157 196 111 220 91 C241 73 277 72 301 87 C328 104 335 141 322 170 C317 184 322 204 308 220 C299 230 286 219 278 203 C269 226 246 238 229 222 C216 210 216 195 205 185Z"></path>
+                            <path class="sketch-hair-highlight" d="M218 143 C218 108 241 88 268 87 C242 99 230 119 232 149 C229 178 220 192 211 199 C213 177 213 160 218 143Z"></path>
+                            <path class="sketch-skin" d="M226 132 C228 107 248 94 270 100 C294 106 306 129 301 153 C297 177 280 190 257 185 C235 180 224 158 226 132Z"></path>
+                            <path class="sketch-bangs" d="M220 132 C225 103 246 88 270 96 C291 91 310 107 314 132 C302 122 292 124 286 144 C279 125 267 120 259 145 C252 126 239 124 220 132Z"></path>
+                            <path class="sketch-eye anime-smile" d="M235 149 C241 143 248 143 254 149"></path>
+                            <path class="sketch-eye anime-smile" d="M273 149 C279 143 286 143 292 149"></path>
+                            <path class="sketch-blush" d="M233 161 C241 166 248 166 255 161 M273 161 C281 166 288 166 295 161"></path>
+                            <path class="sketch-mouth" d="M249 164 C256 173 264 173 271 164 C270 180 251 180 249 164Z"></path>
+                            <path class="sketch-dress" d="M246 186 C256 193 269 194 280 185 C300 197 307 222 317 244 C325 261 339 278 346 290 C317 305 278 302 260 298 C237 303 203 298 188 286 C207 260 215 231 223 210 C229 195 237 189 246 186Z"></path>
+                            <path class="sketch-dress-shadow" d="M224 211 C245 226 283 229 307 211 C300 244 315 271 330 290 C301 298 270 294 259 290 C238 296 213 292 199 284 C215 261 219 236 224 211Z"></path>
+                            <path class="sketch-sleeve" d="M225 196 C207 201 194 218 192 237 C204 244 217 239 232 225Z"></path>
+                            <path class="sketch-arm" d="M217 228 C204 242 198 258 196 273 C196 280 204 282 208 275 C214 258 222 245 237 235Z"></path>
+                            <path class="sketch-arm" d="M298 204 C313 217 326 232 335 246 C339 252 347 249 344 242 C334 220 321 201 306 193Z"></path>
+                            <path class="sketch-hand" d="M194 271 C190 278 197 283 205 277 M333 245 C338 240 345 244 344 250"></path>
+                            <path class="sketch-leg" d="M237 290 C232 301 228 311 226 320 M287 291 C293 301 301 310 309 318"></path>
+                            <path class="sketch-veil" d="M231 106 C203 100 181 122 180 151 C179 182 193 212 215 232 C211 203 217 178 230 160Z"></path>
+                            <path class="sketch-veil" d="M225 105 C214 88 205 78 193 70 M233 101 C228 83 228 72 226 62" stroke-dasharray="5 7"></path>
+                        </g>
+                        <g class="sketch-groom">
+                            <path class="sketch-hair" d="M345 169 C333 143 338 108 358 91 C379 73 413 77 430 99 C446 120 444 153 432 174 C426 188 432 204 419 216 C409 226 398 212 392 197 C382 219 360 222 348 207 C339 196 352 181 345 169Z"></path>
+                            <path class="sketch-hair-highlight" d="M356 135 C355 106 376 88 402 87 C380 98 369 115 371 141 C368 163 358 177 349 185 C349 166 351 150 356 135Z"></path>
+                            <path class="sketch-skin" d="M358 132 C360 108 379 96 400 102 C422 109 432 131 426 153 C420 175 404 185 383 179 C363 173 356 153 358 132Z"></path>
+                            <path class="sketch-bangs" d="M353 128 C359 101 379 88 401 96 C420 92 437 108 438 132 C427 122 417 126 411 143 C404 124 394 121 385 143 C378 126 368 124 353 128Z"></path>
+                            <path class="sketch-eye anime-smile" d="M367 149 C373 144 380 144 386 149"></path>
+                            <path class="sketch-eye anime-smile" d="M401 149 C407 144 414 144 420 149"></path>
+                            <path class="sketch-blush" d="M366 161 C373 165 380 165 386 161 M401 161 C408 165 415 165 421 161"></path>
+                            <path class="sketch-mouth" d="M384 163 C391 169 398 169 404 163"></path>
+                            <path class="sketch-suit" d="M374 181 C387 190 400 190 412 181 C431 194 438 221 447 245 C453 262 462 278 469 289 C437 303 400 300 382 296 C359 300 329 296 314 285 C334 259 342 228 350 207 C356 192 364 184 374 181Z"></path>
+                            <path class="sketch-suit-shadow" d="M351 210 C375 229 421 228 440 210 C435 247 451 275 456 289 C429 297 404 292 383 290 C360 296 340 291 325 284 C341 258 346 234 351 210Z"></path>
+                            <path class="sketch-shirt" d="M375 183 C385 199 398 201 411 182 C405 211 381 213 375 183Z"></path>
+                            <path class="sketch-bow" d="M380 190 C371 184 363 185 359 191 C367 199 376 198 385 193 C395 198 404 197 411 189 C404 183 396 184 388 190Z"></path>
+                            <path class="sketch-arm" d="M354 208 C338 222 326 238 318 255 C315 262 321 266 327 260 C339 244 354 230 370 219Z"></path>
+                            <path class="sketch-arm groom-flower-arm" d="M431 205 C450 218 465 235 478 253 C482 260 490 256 486 249 C474 227 457 209 438 197Z"></path>
+                            <path class="sketch-hand" d="M318 254 C313 261 319 267 327 261 M477 252 C483 247 490 253 486 258"></path>
+                            <path class="sketch-trouser" d="M361 289 C356 301 352 311 349 320 M416 290 C423 301 431 310 439 318"></path>
+                            <path class="sketch-shoe" d="M344 318 C354 313 365 315 372 322 C363 327 352 327 343 324Z M433 316 C443 312 453 316 460 323 C451 327 441 326 432 322Z"></path>
+                        </g>
+                        <g class="sketch-bouquet">
+                            <path class="bouquet-stems" d="M446 238 C439 250 435 263 431 273 M453 238 C448 252 444 265 440 273 M460 238 C456 252 453 264 448 273"></path>
+                            <path class="bouquet-flower" d="M438 224 C428 211 435 197 447 202 C450 188 465 190 466 204 C480 200 486 214 476 223 C484 233 472 243 461 236 C452 247 439 239 438 224Z"></path>
+                            <path class="bouquet-flower small" d="M421 229 C413 218 420 208 430 211 C433 201 444 204 445 214 C455 212 459 223 451 230 C456 239 445 246 436 239 C429 247 419 240 421 229Z"></path>
+                            <path class="bouquet-leaf" d="M433 254 C420 246 411 251 413 262 C422 262 429 260 437 258 M447 256 C459 247 468 252 467 263 C458 263 452 260 445 260"></path>
+                            <path class="bouquet-ribbon" d="M438 267 C429 275 431 283 437 288 M445 268 C452 276 451 284 446 289"></path>
+                        </g>
+                        <path class="sketch-hands" d="M331 257 C337 251 344 251 350 256 C356 260 361 260 367 256"></path>
+                    </g>
+                    <g class="sketch-sparkles">
+                        <path d="M132 116 V144 M118 130 H146"></path>
+                        <path d="M500 145 V165 M490 155 H510"></path>
+                        <path d="M176 268 V282 M169 275 H183"></path>
+                    </g>
+                    <g class="sketch-letter">
+                        <path class="letter-envelope" d="M456 180 L520 180 L520 226 L456 226 Z"></path>
+                        <path class="letter-fold" d="M457 181 L488 207 L519 181 M457 225 L480 204 M519 225 L496 204"></path>
+                        <path class="letter-stamp" d="M504 188 h9 v9 h-9 Z"></path>
+                        <path class="letter-glow" d="M447 172 Q488 150 529 172 M447 235 Q488 253 529 235"></path>
+                    </g>
+                    <g class="sketch-seagrass">
+                        <path d="M74 294 Q68 268 78 248 M77 294 Q84 270 91 259 M82 294 Q102 273 106 252"></path>
+                        <path d="M606 294 Q601 267 608 244 M610 294 Q620 271 628 257 M615 294 Q637 274 643 251"></path>
+                    </g>
+                    <g class="sketch-shells">
+                        <path d="M154 298 Q164 282 174 298 Z M183 304 Q190 293 198 304 Z M548 301 Q557 286 568 301 Z"></path>
+                        <circle cx="212" cy="294" r="3"></circle>
+                        <circle cx="528" cy="286" r="3"></circle>
+                    </g>
+                    <g class="sketch-gulls">
+                        <path d="M92 92 Q105 82 118 92 Q131 82 144 92"></path>
+                        <path d="M610 115 Q621 106 632 115 Q643 106 654 115"></path>
+                    </g>
+                </svg>
+            </div>
+            <div class="opening-caption" aria-hidden="true"><span>ROLLING</span><strong>A LOVE STORY</strong><span>TAKE 01 · SEA SIDE</span></div>
+            <div class="envelope-wrapper">
+                <div class="sparkles" id="sparkles"></div>
+                <div class="envelope">
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-body">
+                        <div class="ticket-perforation" aria-hidden="true"></div>
+                        <div class="ticket-copy"><small>PREMIERE INVITATION</small><strong>SEA / 01</strong><span>OCT 03 · 2026</span></div>
+                        <div class="envelope-letter">
+                            <div class="letter-content">
+                                <span class="letter-icon">✦</span>
+                                <span>开启这一幕</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wax-seal" aria-hidden="true">Z♡</div>
+                </div>
+                <p class="envelope-hint">轻触开启幸福 · A STORY IN MOTION</p>
+            </div>
+        </div>
+
+        <main class="main-content" id="mainContent">
+            <header class="hero-section">
+                <div class="hero-film-meta"><span>ROLL 01</span><span>LOVE / 2026</span></div>
+                <div class="decorative-top">
+                    <svg viewBox="0 0 200 60" class="flourish">
+                        <path d="M10,30 Q50,5 100,30 Q150,55 190,30" fill="none" stroke="currentColor" stroke-width="1"/>
+                        <path d="M30,30 Q70,15 100,30 Q130,45 170,30" fill="none" stroke="currentColor" stroke-width="0.5"/>
+                    </svg>
+                </div>
+                <p class="subtitle animate-in">A love story by the sea</p>
+                <h1 class="couple-names">
+                    <span class="name animate-in" data-text="新郎 & 新娘">新郎 & 新娘</span>
+                </h1>
+                <p class="hero-kicker animate-in">海风会记得，我们相爱并决定相守</p>
+                <div class="date-badge animate-in">
+                    <div class="date-inner">
+                        <span class="year">2026</span>
+                        <span class="divider"></span>
+                        <span class="month-day">10月3日 · 中午</span>
+                    </div>
+                </div>
+                <div class="hero-location animate-in"><span class="location-line"></span>海岸线 · 祝福 · 永远<span class="location-line"></span></div>
+                <div class="scroll-cue animate-in"><span></span>向下展开我们的故事</div>
+                <div class="floating-decor">
+                    <div class="float-item float-1">♡</div>
+                    <div class="float-item float-2">✦</div>
+                    <div class="float-item float-3">♡</div>
+                    <div class="float-item float-4">✦</div>
+                </div>
+            </header>
+
+            <section class="invitation-text">
+                <div class="text-decoration animate-scroll">✦</div>
+                <p class="main-text animate-scroll">佳期已定，邀您同庆</p>
+                <p class="sub-text animate-scroll">我们诚挚地邀请您<br>见证这份幸福与喜悦</p>
+                <div class="quote-box animate-scroll">
+                    <p>"执子之手，与子偕老"</p>
+                    <span>— 这一次，把余生拍成一部电影 —</span>
+                </div>
+            </section>
+
+            <section class="story-section">
+                <div class="section-eyebrow animate-scroll">THE STORY SO FAR</div>
+                <h2 class="section-title animate-scroll">我们的电影，从这里开始</h2>
+                <p class="story-lead animate-scroll">从第一次见面时的怦然心动，到海边婚纱照里并肩看潮汐，我们把平凡的日子过成了只属于彼此的浪漫。</p>
+                <div class="film-timeline">
+                    <article class="film-card animate-scroll"><span class="film-number">01</span><strong>初见</strong><p>那天的风很轻，刚好把你带到我身边。</p></article>
+                    <article class="film-card animate-scroll"><span class="film-number">02</span><strong>相爱</strong><p>我们把每一次晚餐、散步和远行，都收藏成了彩蛋。</p></article>
+                    <article class="film-card animate-scroll"><span class="film-number">03</span><strong>相守</strong><p>这一幕没有片尾字幕，因为我们的故事还在继续。</p></article>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <div class="info-card animate-scroll" id="ceremonyCard">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 48 48" aria-hidden="true"><path class="icon-soft-fill" d="M24 8c5.4 0 9.7 4.4 9.7 9.8 0 8-9.7 15.8-9.7 15.8s-9.7-7.8-9.7-15.8C14.3 12.4 18.6 8 24 8Z"/><path class="icon-main-line" d="M24 34.2C18.5 29.8 13.2 24.4 13.2 17.8A10.8 10.8 0 0 1 24 7a10.8 10.8 0 0 1 10.8 10.8C34.8 24.4 29.5 29.8 24 34.2Z"/><path class="icon-main-line" d="M20.2 18.1c0-2.1 1.7-3.8 3.8-3.8s3.8 1.7 3.8 3.8-1.7 3.8-3.8 3.8-3.8-1.7-3.8-3.8Z"/><path class="icon-accent-line" d="M18 38.5c3.8 1.9 8.2 1.9 12 0M20.5 42c2.3.7 4.7.7 7 0"/></svg>
+                    </div>
+                    <h3>婚礼仪式</h3>
+                    <p class="info-time">中午 12:00</p>
+                    <p class="info-detail">点击查看详情</p>
+                </div>
+                <div class="info-card animate-scroll" id="venueCard">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 48 48" aria-hidden="true"><path class="icon-soft-fill" d="M13 29.5h22V40H13Z"/><path class="icon-main-line" d="M12 39.5h24M15 39V25.5M33 39V25.5M11 25.5h26L24 14 11 25.5Z"/><path class="icon-main-line" d="M19.5 39V30h9v9M20.5 18.2c0-2 1.6-3.7 3.5-3.7s3.5 1.7 3.5 3.7"/><path class="icon-accent-line" d="M17 11.5c2.2-3 5.2-4.5 7-4.5s4.8 1.5 7 4.5M9 42h30"/></svg>
+                    </div>
+                    <h3>婚宴地点</h3>
+                    <p class="info-time">幸福大酒店</p>
+                    <p class="info-detail">点击查看详情</p>
+                </div>
+                <div class="info-card animate-scroll" id="dressCard">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 48 48" aria-hidden="true"><path class="icon-soft-fill" d="M18.2 19.5h11.6l7 21H11.2l7-21Z"/><path class="icon-main-line" d="M20 9.2c.8 3 2.1 4.5 4 4.5s3.2-1.5 4-4.5M20 9.2l-6.5 4.1 3.7 7.1-6.4 20h26.4l-6.4-20 3.7-7.1L28 9.2"/><path class="icon-main-line" d="M17.2 20.4c4.3 2 9.3 2 13.6 0M14.2 32.2c6.3 2.8 13.3 2.8 19.6 0"/><path class="icon-accent-line" d="M21.2 14.2 24 18l2.8-3.8"/></svg>
+                    </div>
+                    <h3>着装建议</h3>
+                    <p class="info-time">正装出席</p>
+                    <p class="info-detail">点击查看详情</p>
+                </div>
+                <div class="info-card animate-scroll countdown-card" id="countdownCard">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 48 48" aria-hidden="true"><circle class="icon-soft-fill" cx="24" cy="25" r="14"/><circle class="icon-main-line" cx="24" cy="25" r="15.5"/><path class="icon-main-line" d="M24 15.5V25l7 4M18.5 6.5h11M24 6.5v3M35.7 11.5l2.2 2.2"/><path class="icon-accent-line" d="M14.5 38.5c5.6 4.1 13.4 4.1 19 0"/></svg>
+                    </div>
+                    <h3>倒计时</h3>
+                    <div class="countdown-timer" id="countdownTimer">
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="countDays">--</span>
+                            <span class="countdown-label">天</span>
+                        </div>
+                        <div class="countdown-separator">:</div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="countHours">--</span>
+                            <span class="countdown-label">时</span>
+                        </div>
+                        <div class="countdown-separator">:</div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="countMinutes">--</span>
+                            <span class="countdown-label">分</span>
+                        </div>
+                        <div class="countdown-separator">:</div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="countSeconds">--</span>
+                            <span class="countdown-label">秒</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="featured-photo-section">
+                <div class="featured-photo animate-scroll">
+                    <div class="poster-meta"><span>FRAME 03 / 05</span><span>THE SEA KNOWS</span></div>
+                    <div class="placeholder-img featured" style="background-image:url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=85')"><span>海风里的我们</span></div>
+                    <div class="photo-overlay">
+                        <p class="photo-quote">"遇见你，是最美丽的意外"</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 互动区域 -->
+            <section class="interactive-section">
+                <h2 class="section-title animate-scroll">互动专区</h2>
+                <div class="interactive-cards">
+                    <div class="interactive-card animate-scroll" onclick="openModal('gameModal')">
+                        <div class="card-emoji">🎮</div>
+                        <h4>互动游戏</h4>
+                        <p>默契大考验</p>
+                    </div>
+                    <div class="interactive-card animate-scroll" onclick="openModal('galleryModal')">
+                        <div class="card-emoji">📸</div>
+                        <h4>精彩时刻</h4>
+                        <p>查看幸福瞬间</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 实时祝福墙 -->
+            <section class="blessing-wall-section">
+                <h2 class="section-title animate-scroll">祝福墙</h2>
+                <div class="wall-script" aria-hidden="true">leave a little light here</div>
+                <div class="live-counter animate-scroll">
+                    <span class="live-dot-small"></span>
+                    <span>已有 <strong id="wishCount">0</strong> 条祝福</span>
+                </div>
+                <div class="blessing-wall" id="blessingWall">
+                    <span class="wall-tape wall-tape-left" aria-hidden="true"></span>
+                    <span class="wall-tape wall-tape-right" aria-hidden="true"></span>
+                    <span class="wall-sun-doodle" aria-hidden="true">✳</span>
+                </div>
+                <div class="wish-input-box animate-scroll">
+                    <input type="text" placeholder="您的名字" class="rsvp-input" id="wallName">
+                    <textarea placeholder="写下您的祝福..." class="wish-textarea" id="wallMessage"></textarea>
+                    <button class="btn btn-blessing" onclick="sendWallWish()">送上祝福</button>
+                </div>
+            </section>
+
+            <!-- 相册 -->
+            <section class="gallery-section">
+                <h2 class="section-title animate-scroll">幸福瞬间</h2>
+                <p class="gallery-note animate-scroll">somewhere between the tide and forever</p>
+                <div class="gallery-grid">
+                    <div class="gallery-item frame-polaroid animate-scroll" data-index="1"><div class="placeholder-img" style="background-image:url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=85')"><span>浪花与白纱</span></div></div>
+                    <div class="gallery-item frame-slide animate-scroll" data-index="2"><div class="placeholder-img" style="background-image:url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=85')"><span>沿海岸线漫步</span></div></div>
+                    <div class="gallery-item large frame-cinema animate-scroll" data-index="3"><div class="placeholder-img" style="background-image:url('https://images.unsplash.com/photo-1507504031003-b417219a0fde?auto=format&fit=crop&w=1000&q=85')"><span>夕阳落在肩头</span></div></div>
+                    <div class="gallery-item frame-polaroid animate-scroll" data-index="4"><div class="placeholder-img" style="background-image:url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=85')"><span>交换一生的承诺</span></div></div>
+                    <div class="gallery-item frame-slide animate-scroll" data-index="5"><div class="placeholder-img" style="background-image:url('https://images.unsplash.com/photo-1494774157365-9e04c6720e47?auto=format&fit=crop&w=800&q=85')"><span>此刻，刚刚好</span></div></div>
+                </div>
+            </section>
+
+            <!-- RSVP -->
+            <section class="rsvp-section">
+                <div class="rsvp-card animate-scroll">
+                    <h2>出席回复</h2>
+                    <p>请告诉我们您是否能够出席</p>
+                    <div class="rsvp-fields">
+                        <input type="text" id="guestName" placeholder="您的姓名">
+                        <select id="guestCount" aria-label="出席人数"><option value="1">1 位出席</option><option value="2">2 位出席</option><option value="3">3 位出席</option><option value="4">4 位出席</option></select>
+                    </div>
+                    <div class="rsvp-buttons">
+                        <button class="btn btn-accept" onclick="handleRSVP('accept')">
+                            <span class="btn-icon">✓</span> 欣然出席
+                        </button>
+                        <button class="btn btn-decline" onclick="handleRSVP('decline')">
+                            <span class="btn-icon">✗</span> 遗憾缺席
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <div class="footer-hearts">
+                    <span class="heart-float">♡</span>
+                    <span class="heart-float">♡</span>
+                    <span class="heart-float">♡</span>
+                </div>
+                <p class="footer-text animate-scroll">期待您的到来</p>
+                <p class="footer-names animate-scroll">新郎 & 新娘</p>
+                <p class="footer-date animate-scroll">2026.10.03 · NOON</p>
+                <div class="footer-bottom"><p>Made with ♥</p></div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- 弹窗们 -->
+    <div class="modal-overlay" id="ceremonyModal">
+        <div class="modal"><button class="modal-close" onclick="closeModal('ceremonyModal')">&times;</button>
+            <div class="modal-content"><div class="modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></div>
+            <h2>婚礼仪式</h2><div class="modal-details"><div class="detail-row"><span class="detail-label">日期</span><span class="detail-value">2026年10月3日</span></div><div class="detail-row"><span class="detail-label">时间</span><span class="detail-value">中午 12:00</span></div><div class="detail-row"><span class="detail-label">流程</span><span class="detail-value">11:30 来宾签到<br>12:00 婚礼仪式<br>13:00 海边午宴</span></div></div></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="venueModal">
+        <div class="modal"><button class="modal-close" onclick="closeModal('venueModal')">&times;</button>
+            <div class="modal-content"><div class="modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <h2>婚宴地点</h2><div class="modal-details"><div class="detail-row"><span class="detail-label">酒店</span><span class="detail-value">幸福大酒店</span></div><div class="detail-row"><span class="detail-label">宴会厅</span><span class="detail-value">三楼 永恒厅</span></div><div class="detail-row"><span class="detail-label">地址</span><span class="detail-value">幸福路168号</span></div></div>
+            <button class="btn btn-map" onclick="openMap()">导航前往</button></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="dressModal">
+        <div class="modal"><button class="modal-close" onclick="closeModal('dressModal')">&times;</button>
+            <div class="modal-content"><div class="modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.38 3.46L16 2L12 5.5L8 2L3.62 3.46L2 8L5 12L2 22H22L19 12L22 8L20.38 3.46Z"/></svg></div>
+            <h2>着装建议</h2><div class="modal-details"><div class="detail-row"><span class="detail-label">风格</span><span class="detail-value">正装/礼服</span></div><div class="detail-row"><span class="detail-label">色系</span><span class="detail-value">浅色系为佳</span></div></div></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="galleryModal">
+        <div class="modal"><button class="modal-close" onclick="closeModal('galleryModal')">&times;</button>
+            <div class="modal-content"><div class="modal-icon"><span style="font-size:40px">📸</span></div>
+            <h2>精彩时刻</h2>
+            <div class="modal-gallery-grid">
+                <div class="modal-gallery-item" onclick="closeModal('galleryModal')"><div class="placeholder-img"><span>照片1</span></div></div>
+                <div class="modal-gallery-item" onclick="closeModal('galleryModal')"><div class="placeholder-img"><span>照片2</span></div></div>
+                <div class="modal-gallery-item" onclick="closeModal('galleryModal')"><div class="placeholder-img"><span>照片3</span></div></div>
+                <div class="modal-gallery-item" onclick="closeModal('galleryModal')"><div class="placeholder-img"><span>照片4</span></div></div>
+                <div class="modal-gallery-item" onclick="closeModal('galleryModal')"><div class="placeholder-img"><span>照片5</span></div></div>
+                <div class="modal-gallery-item" onclick="closeModal('galleryModal')"><div class="placeholder-img"><span>照片6</span></div></div>
+            </div></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="gameModal">
+        <div class="modal game-modal"><button class="modal-close" onclick="closeModal('gameModal')">&times;</button>
+            <div class="modal-content"><div class="modal-icon"><span style="font-size:40px">🎮</span></div>
+            <h2>默契大考验</h2><p class="modal-desc">测测你对新人的了解程度</p>
+            <div class="game-container" id="gameContainer">
+                <div class="game-question active" data-q="1"><p class="question-text">新人是在哪个季节认识的？</p><div class="game-options"><button class="game-option" onclick="checkAnswer(this,1,false)">春天</button><button class="game-option" onclick="checkAnswer(this,1,true)">夏天</button><button class="game-option" onclick="checkAnswer(this,1,false)">秋天</button><button class="game-option" onclick="checkAnswer(this,1,false)">冬天</button></div></div>
+                <div class="game-question" data-q="2"><p class="question-text">新人的恋爱纪念日是几月？</p><div class="game-options"><button class="game-option" onclick="checkAnswer(this,2,false)">3月</button><button class="game-option" onclick="checkAnswer(this,2,true)">5月</button><button class="game-option" onclick="checkAnswer(this,2,false)">8月</button><button class="game-option" onclick="checkAnswer(this,2,false)">10月</button></div></div>
+                <div class="game-question" data-q="3"><p class="question-text">新郎求婚时送了几朵玫瑰？</p><div class="game-options"><button class="game-option" onclick="checkAnswer(this,3,false)">9朵</button><button class="game-option" onclick="checkAnswer(this,3,false)">33朵</button><button class="game-option" onclick="checkAnswer(this,3,true)">99朵</button><button class="game-option" onclick="checkAnswer(this,3,false)">108朵</button></div></div>
+            </div>
+            <div class="game-result" id="gameResult" style="display:none"><div class="result-score"><span id="scoreNumber">0</span><span class="score-label">分</span></div><p class="result-text" id="resultText"></p><button class="btn btn-send" onclick="resetGame()">再玩一次</button></div>
+            <div class="game-progress"><div class="progress-bar" id="gameProgress"></div></div></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="rsvpModal">
+        <div class="modal rsvp-modal"><div class="modal-content"><div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <h2 id="rsvpTitle">感谢您的回复</h2><p id="rsvpMessage">我们已收到您的回复</p><button class="btn btn-close" onclick="closeModal('rsvpModal')">确定</button></div></div>
+    </div>
+
+    <div class="modal-overlay" id="successModal">
+        <div class="modal rsvp-modal"><div class="modal-content"><div class="success-icon"><span style="font-size:50px" id="successEmoji">✅</span></div>
+        <h2 id="successTitle">操作成功</h2><p id="successMessage">感谢您的参与</p><button class="btn btn-close" onclick="closeModal('successModal')">确定</button></div></div>
+    </div>
+
+    <div class="lightbox-overlay" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <button class="lightbox-prev" onclick="prevImage()">‹</button>
+        <button class="lightbox-next" onclick="nextImage()">›</button>
+        <div class="lightbox-content"><div class="lightbox-img" id="lightboxImg"></div><p class="lightbox-caption" id="lightboxCaption"></p><div class="lightbox-counter" id="lightboxCounter">1 / 5</div></div>
+    </div>
+
+    <button class="music-toggle" id="musicToggle" onclick="toggleMusic()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="music-icon"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></button>
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="18 15 12 9 6 15"/></svg></button>
+
+    <script src="script.js"></script>
+</body>
+</html>

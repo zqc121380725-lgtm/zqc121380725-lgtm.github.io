@@ -1,0 +1,1094 @@
+/* 开场艺术镜头扩展：海边婚礼插画、人物动作与信函显影 */
+.opening-sun::before,
+.opening-sun::after {
+    content: '';
+    position: absolute;
+    inset: 11%;
+    border-radius: 50%;
+    border: 1px solid rgba(248, 236, 212, .22);
+    animation: sunRipple 6s ease-in-out infinite;
+}
+
+.opening-sun::after {
+    inset: 22%;
+    border-color: rgba(244, 203, 145, .22);
+    animation-delay: -2s;
+}
+
+@keyframes sunRipple {
+    0%, 100% { transform: scale(.92); opacity: .25; }
+    50% { transform: scale(1.08); opacity: .72; }
+}
+
+.beach-sketch {
+    contain: layout paint;
+    will-change: transform, opacity;
+}
+
+.beach-sketch svg {
+    shape-rendering: geometricPrecision;
+}
+
+.beach-sketch .sketch-couple {
+    will-change: transform;
+}
+
+.beach-sketch .sketch-bride,
+.beach-sketch .sketch-groom,
+.beach-sketch .sketch-bouquet {
+    vector-effect: non-scaling-stroke;
+}
+
+.beach-sketch .sketch-bride {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+}
+
+.beach-sketch .sketch-groom {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+}
+
+.beach-sketch .sketch-bouquet {
+    transform-box: fill-box;
+}
+
+.beach-sketch .sketch-veil {
+    stroke-dashoffset: 0;
+}
+
+.beach-sketch .sketch-dress {
+    stroke-dasharray: 260;
+    stroke-dashoffset: 260;
+    animation: dressDraw 1.2s ease-out .15s forwards;
+}
+
+@keyframes dressDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.beach-sketch .sketch-suit {
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    animation: suitDraw 1s ease-out .2s forwards;
+}
+
+@keyframes suitDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.beach-sketch .sketch-hair {
+    stroke-dasharray: 120;
+    stroke-dashoffset: 120;
+    animation: hairDraw 1.1s ease-out .1s forwards;
+}
+
+@keyframes hairDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.beach-sketch .sketch-face {
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    animation: faceDraw .8s ease-out .45s forwards;
+}
+
+@keyframes faceDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.beach-sketch .sketch-lapel {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: lapelDraw .9s ease-out .35s forwards;
+}
+
+@keyframes lapelDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.beach-sketch .sketch-dress-detail {
+    stroke-dasharray: 90;
+    stroke-dashoffset: 90;
+    animation: detailDraw 1.1s ease-out .5s forwards;
+}
+
+@keyframes detailDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.beach-sketch .bouquet-stems {
+    stroke-dasharray: 90;
+    stroke-dashoffset: 90;
+    animation: bouquetStemsDraw .7s ease-out .8s forwards;
+}
+
+@keyframes bouquetStemsDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.beach-sketch .sketch-bouquet circle {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: flowerBloom .55s cubic-bezier(.18, .8, .2, 1) both;
+}
+
+.beach-sketch .sketch-bouquet circle:nth-child(2) { animation-delay: .72s; }
+.beach-sketch .sketch-bouquet circle:nth-child(3) { animation-delay: .77s; }
+.beach-sketch .sketch-bouquet circle:nth-child(4) { animation-delay: .82s; }
+.beach-sketch .sketch-bouquet circle:nth-child(5) { animation-delay: .87s; }
+.beach-sketch .sketch-bouquet circle:nth-child(6) { animation-delay: .92s; }
+
+@keyframes flowerBloom {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.beach-sketch .sketch-sparkles path {
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    animation: sparkleDraw .8s ease-out both;
+}
+
+.beach-sketch .sketch-sparkles path:nth-child(2) { animation-delay: .25s; }
+.beach-sketch .sketch-sparkles path:nth-child(3) { animation-delay: .5s; }
+
+@keyframes sparkleDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.beach-sketch .sketch-gulls path {
+    stroke-dasharray: 80;
+    stroke-dashoffset: 80;
+    animation: gullDraw 1s ease-out both;
+}
+
+.beach-sketch .sketch-gulls path:nth-child(2) { animation-delay: .35s; }
+
+@keyframes gullDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.beach-sketch .sketch-horizon {
+    stroke-dasharray: 650;
+    stroke-dashoffset: 650;
+    animation: horizonDraw 2.2s ease-out .15s forwards;
+}
+
+@keyframes horizonDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.beach-sketch .sketch-wave {
+    stroke-dasharray: 720;
+    stroke-dashoffset: 720;
+    animation: waveDraw 2s ease-out .35s forwards, waveBreathe 3.5s ease-in-out 2s infinite;
+}
+
+@keyframes waveDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes waveBreathe {
+    0%, 100% { transform: translateX(0); opacity: .7; }
+    50% { transform: translateX(12px); opacity: 1; }
+}
+
+.beach-sketch .sketch-wave-back {
+    stroke-dasharray: 720;
+    stroke-dashoffset: 720;
+    animation: waveBackDraw 2.4s ease-out .55s forwards, waveBackBreathe 4s ease-in-out 2.2s infinite;
+}
+
+@keyframes waveBackDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes waveBackBreathe {
+    0%, 100% { transform: translateX(0); opacity: .45; }
+    50% { transform: translateX(-16px); opacity: .75; }
+}
+
+.beach-sketch .sketch-sand {
+    stroke-dasharray: 700;
+    stroke-dashoffset: 700;
+    animation: sandDraw 2.6s ease-out .7s forwards;
+}
+
+@keyframes sandDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.beach-sketch .sketch-seagrass path {
+    stroke-dasharray: 75;
+    stroke-dashoffset: 75;
+    animation: grassDraw .8s ease-out both;
+}
+
+.beach-sketch .sketch-seagrass path:nth-child(2) { animation-delay: .2s; }
+.beach-sketch .sketch-seagrass path:nth-child(3) { animation-delay: .4s; }
+.beach-sketch .sketch-seagrass path:nth-child(4) { animation-delay: .6s; }
+.beach-sketch .sketch-seagrass path:nth-child(5) { animation-delay: .8s; }
+
+@keyframes grassDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.beach-sketch .sketch-shells path,
+.beach-sketch .sketch-shells circle {
+    opacity: 0;
+    animation: shellAppear .7s ease-out 1.1s forwards;
+}
+
+.beach-sketch .sketch-shells path:nth-child(2) { animation-delay: 1.3s; }
+.beach-sketch .sketch-shells path:nth-child(3) { animation-delay: 1.5s; }
+.beach-sketch .sketch-shells circle:nth-child(4) { animation-delay: 1.7s; }
+.beach-sketch .sketch-shells circle:nth-child(5) { animation-delay: 1.9s; }
+
+@keyframes shellAppear {
+    from { opacity: 0; transform: translateY(5px) scale(.6); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.beach-sketch .letter-envelope {
+    stroke-dasharray: 190;
+    stroke-dashoffset: 190;
+}
+
+.beach-sketch .letter-fold {
+    stroke-dasharray: 110;
+    stroke-dashoffset: 110;
+}
+
+.beach-sketch .letter-stamp {
+    opacity: 0;
+}
+
+.envelope-animation.opened .letter-envelope {
+    animation: letterOutlineDraw .55s ease-out 2.95s forwards;
+}
+
+.envelope-animation.opened .letter-fold {
+    animation: letterOutlineDraw .5s ease-out 3.2s forwards;
+}
+
+.envelope-animation.opened .letter-stamp {
+    animation: stampAppear .4s ease-out 3.35s forwards;
+}
+
+@keyframes letterOutlineDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes stampAppear {
+    from { opacity: 0; transform: scale(0); transform-origin: center; }
+    to { opacity: 1; transform: scale(1); transform-origin: center; }
+}
+
+.beach-sketch .letter-glow {
+    stroke-dasharray: 180;
+    stroke-dashoffset: 180;
+}
+
+.envelope-animation.opened .letter-glow {
+    animation: letterHalo 1.2s ease-out 3.25s forwards;
+}
+
+@keyframes letterHalo {
+    0% { opacity: 0; stroke-dashoffset: 180; }
+    45% { opacity: 1; }
+    100% { opacity: 0; stroke-dashoffset: 0; }
+}
+
+.envelope-animation.opened .sketch-veil {
+    animation: veilRun 1.05s ease-in-out infinite;
+}
+
+@keyframes veilRun {
+    0%, 100% { transform: translateX(0) rotate(0); }
+    25% { transform: translateX(-7px) rotate(-2deg); }
+    50% { transform: translateX(-16px) rotate(-5deg); }
+    75% { transform: translateX(-5px) rotate(-2deg); }
+}
+
+.envelope-animation.opened .sketch-dress-detail {
+    animation: fabricFlash 1.3s ease-in-out infinite;
+}
+
+@keyframes fabricFlash {
+    0%, 100% { opacity: .7; }
+    50% { opacity: 1; }
+}
+
+.envelope-animation.opened .bouquet-leaf {
+    animation: leafBounce .8s ease-in-out infinite;
+    transform-origin: center;
+}
+
+@keyframes leafBounce {
+    0%, 100% { transform: rotate(0); }
+    50% { transform: rotate(6deg); }
+}
+
+.envelope-animation.opened .bouquet-ribbon {
+    animation: ribbonFlutter .7s ease-in-out infinite;
+    transform-origin: center;
+}
+
+@keyframes ribbonFlutter {
+    0%, 100% { transform: translateX(0) rotate(0); }
+    50% { transform: translateX(3px) rotate(7deg); }
+}
+
+.envelope-animation.opened .sketch-shoe {
+    animation: shoeFlash .65s steps(2) infinite;
+}
+
+@keyframes shoeFlash {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: .78; }
+}
+
+.opening-caption {
+    will-change: opacity, letter-spacing;
+}
+
+.opening-caption span,
+.opening-caption strong {
+    text-shadow: 0 2px 8px rgba(23, 60, 74, .22);
+}
+
+.envelope-animation.opened .opening-caption strong {
+    animation: titlePulse 1.4s ease-in-out 2.2s both;
+}
+
+@keyframes titlePulse {
+    0%, 100% { color: #f7d39d; }
+    50% { color: #fff8e8; text-shadow: 0 0 20px rgba(255, 242, 199, .9); }
+}
+
+.envelope-animation.opened .envelope-hint {
+    animation: hintLift 1.2s ease-in 2.5s both;
+}
+
+@keyframes hintLift {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-20px); }
+}
+
+.envelope-animation.opened .sparkle {
+    animation-duration: .7s;
+}
+
+.envelope-animation.opened .wax-seal {
+    animation: sealRelease 1.1s cubic-bezier(.18, .8, .2, 1) .25s both;
+}
+
+@keyframes sealRelease {
+    0% { transform: translateX(-50%) scale(1) rotate(0); }
+    45% { transform: translateX(-50%) scale(1.25) rotate(12deg); }
+    100% { transform: translateX(-50%) scale(.4) rotate(45deg); opacity: 0; }
+}
+
+.envelope-animation.opened .envelope-flap {
+    animation: flapRelease 1.2s cubic-bezier(.18, .8, .2, 1) .4s both;
+}
+
+@keyframes flapRelease {
+    0% { transform: rotateX(0); }
+    40% { transform: rotateX(-52deg); }
+    100% { transform: rotateX(-95deg) translateY(-16px); opacity: .15; }
+}
+
+.envelope-animation.opened .envelope-letter {
+    animation: letterLift 1.5s cubic-bezier(.18, .8, .2, 1) .55s both;
+}
+
+@keyframes letterLift {
+    0% { transform: translate(-50%, -50%) translateY(0); opacity: 1; }
+    50% { transform: translate(-50%, -50%) translateY(-25px); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateY(-100px); opacity: 0; }
+}
+
+.envelope-animation.opened .ticket-copy,
+.envelope-animation.opened .ticket-perforation {
+    animation: ticketFade 1s ease-out 1.15s both;
+}
+
+@keyframes ticketFade {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.envelope-animation.opened .envelope-body {
+    animation: paperTurn 1.5s ease-in 1.1s both;
+}
+
+@keyframes paperTurn {
+    0% { transform: scale(1) rotate(0); }
+    45% { transform: scale(1.06) rotate(-2deg); }
+    100% { transform: scale(.35) rotate(-12deg); opacity: 0; }
+}
+
+.envelope-animation.opened .envelope {
+    animation: envelopeDisappear 1.5s ease-in 1.25s both;
+}
+
+@keyframes envelopeDisappear {
+    0% { transform: translateY(0) rotateY(0); }
+    45% { transform: translateY(-15px) rotateY(8deg); }
+    100% { transform: translateY(-40px) rotateY(25deg); opacity: 0; }
+}
+
+.envelope-animation.opened .film-dust {
+    animation: dustRush 4s ease-in both;
+}
+
+@keyframes dustRush {
+    0% { opacity: .16; transform: scale(1); }
+    60% { opacity: .35; transform: scale(1.05); }
+    100% { opacity: 0; transform: scale(1.18); }
+}
+
+.envelope-animation.opened .tide-lines {
+    animation: tideArrival 4s ease-in-out both;
+}
+
+@keyframes tideArrival {
+    0% { opacity: .18; transform: perspective(260px) rotateX(58deg) translateY(10px); }
+    55% { opacity: .35; transform: perspective(260px) rotateX(58deg) translateY(0); }
+    100% { opacity: 0; transform: perspective(260px) rotateX(58deg) translateY(-20px); }
+}
+
+@media (min-width: 768px) {
+    .beach-sketch { width: min(58vw, 760px); bottom: 14%; }
+}
+
+@media (max-width: 420px) {
+    .beach-sketch { width: 124vw; bottom: 17%; }
+    .opening-caption { left: 6%; right: 6%; }
+    .opening-caption strong { letter-spacing: 1px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .beach-sketch *,
+    .opening-sun::before,
+    .opening-sun::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+.opening-accessibility-note {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.beach-sketch .sketch-gulls,
+.beach-sketch .sketch-shells,
+.beach-sketch .sketch-seagrass,
+.beach-sketch .sketch-sparkles,
+.beach-sketch .sketch-letter {
+    pointer-events: none;
+}
+
+.beach-sketch .sketch-horizon,
+.beach-sketch .sketch-wave,
+.beach-sketch .sketch-wave-back,
+.beach-sketch .sketch-sand {
+    vector-effect: non-scaling-stroke;
+}
+
+/* 最终时间轴覆盖：与脚本的7秒显影保持一致 */
+.envelope-animation.opened .beach-sketch {
+    animation-duration: 7s;
+}
+
+.envelope-animation.opened .sketch-couple {
+    animation: coupleJourney 7s cubic-bezier(.2, .75, .18, 1) both;
+}
+
+.envelope-animation.opened .sketch-letter {
+    animation: letterJourney 7s ease-in-out both;
+}
+
+.envelope-animation.opened .letter-glow {
+    animation: letterGlow 7s ease-in-out both;
+}
+
+.envelope-animation.opened .opening-caption {
+    animation-duration: 7s;
+}
+
+/* Final illustration pass: keep the couple readable on small screens. */
+.beach-sketch .sketch-bride,
+.beach-sketch .sketch-groom {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+    filter: drop-shadow(0 3px 2px rgba(45, 74, 79, .16));
+}
+
+.beach-sketch .sketch-bride {
+    transform: scale(1.16);
+}
+
+.beach-sketch .sketch-groom {
+    transform: scale(1.14);
+}
+
+.beach-sketch .sketch-hair {
+    fill: #594c4d !important;
+    stroke: #594c4d !important;
+    stroke-width: 1.8 !important;
+}
+
+.beach-sketch .sketch-skin {
+    fill: #f7d8c7 !important;
+    stroke: #a9756d !important;
+    stroke-width: 1.35 !important;
+}
+
+.beach-sketch .sketch-bangs {
+    fill: #594c4d !important;
+    stroke: #594c4d !important;
+    stroke-width: 1.2 !important;
+}
+
+.beach-sketch .sketch-dress {
+    fill: rgba(255, 250, 239, .92) !important;
+    stroke: #c79183 !important;
+    stroke-width: 1.45 !important;
+}
+
+.beach-sketch .sketch-suit {
+    fill: #354a54 !important;
+    stroke: #283b44 !important;
+    stroke-width: 1.5 !important;
+}
+
+.beach-sketch .sketch-shirt {
+    fill: #fffaf0 !important;
+    stroke: #8f7775 !important;
+    stroke-width: 1 !important;
+}
+
+.beach-sketch .sketch-lapel,
+.beach-sketch .sketch-dress-detail {
+    fill: none !important;
+    stroke: rgba(145, 99, 99, .62) !important;
+    stroke-width: 1.35 !important;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.beach-sketch .sketch-lapel {
+    stroke: rgba(245, 222, 202, .72) !important;
+}
+
+.beach-sketch .sketch-veil {
+    fill: rgba(255, 250, 239, .18) !important;
+    stroke: rgba(255, 250, 239, .86) !important;
+    stroke-width: 1.3 !important;
+}
+
+/* Keep the hand-drawn figures clear while the sea scene remains misty. */
+.envelope-animation.opened .beach-sketch {
+    animation: sceneRevealSoft 7s cubic-bezier(.2, .75, .18, 1) both;
+}
+
+@keyframes sceneRevealSoft {
+    0% { opacity: 0; transform: translate(-50%, 24px) scale(.94); }
+    14% { opacity: 1; transform: translate(-50%, 8px) scale(.98); }
+    78% { opacity: 1; transform: translate(-50%, -2px) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -18px) scale(1.06); }
+}
+
+.envelope-animation.opened .sketch-couple {
+    opacity: 1;
+    filter: drop-shadow(0 4px 4px rgba(36, 71, 77, .2));
+}
+
+.envelope-animation.opened .sketch-hair,
+.envelope-animation.opened .sketch-bangs {
+    fill: #685257 !important;
+    stroke: #685257 !important;
+}
+
+.envelope-animation.opened .sketch-skin {
+    fill: #f9d8c8 !important;
+}
+
+.envelope-animation.opened .sketch-dress {
+    fill: rgba(255, 250, 240, .98) !important;
+    stroke: #d7a9a0 !important;
+}
+
+.envelope-animation.opened .sketch-suit {
+    fill: #38515d !important;
+    stroke: #31434e !important;
+}
+
+.envelope-animation.opened .sketch-veil {
+    opacity: .72 !important;
+}
+
+/* Filled illustration palette for the new soft manga figures. */
+.beach-sketch .sketch-couple {
+    filter: drop-shadow(0 5px 5px rgba(50, 76, 78, .18));
+}
+
+.beach-sketch .sketch-hair {
+    fill: #6d5660 !important;
+    stroke: #513f4a !important;
+    stroke-width: 1.4 !important;
+    stroke-linejoin: round;
+}
+
+.beach-sketch .sketch-hair-highlight {
+    fill: #9b7b82 !important;
+    stroke: none !important;
+    opacity: .72;
+}
+
+.beach-sketch .sketch-skin {
+    fill: #f8d6c6 !important;
+    stroke: #b77f79 !important;
+    stroke-width: 1.1 !important;
+}
+
+.beach-sketch .sketch-bangs {
+    fill: #6d5660 !important;
+    stroke: #513f4a !important;
+    stroke-width: 1.2 !important;
+    stroke-linejoin: round;
+}
+
+.beach-sketch .sketch-dress {
+    fill: #fff9ed !important;
+    stroke: #c98e88 !important;
+    stroke-width: 1.35 !important;
+    stroke-linejoin: round;
+}
+
+.beach-sketch .sketch-dress-shadow {
+    fill: #f0d9d2 !important;
+    stroke: none !important;
+    opacity: .8;
+}
+
+.beach-sketch .sketch-sleeve {
+    fill: #fff9ed !important;
+    stroke: #c98e88 !important;
+    stroke-width: 1.2 !important;
+    stroke-linejoin: round;
+}
+
+.beach-sketch .sketch-suit {
+    fill: #3e5964 !important;
+    stroke: #2f424c !important;
+    stroke-width: 1.4 !important;
+    stroke-linejoin: round;
+}
+
+.beach-sketch .sketch-suit-shadow {
+    fill: #314953 !important;
+    stroke: none !important;
+    opacity: .82;
+}
+
+.beach-sketch .sketch-shirt {
+    fill: #fff9ed !important;
+    stroke: #8d7473 !important;
+    stroke-width: 1 !important;
+}
+
+.beach-sketch .sketch-bow {
+    fill: #d78e83 !important;
+    stroke: #9c605f !important;
+    stroke-width: 1 !important;
+    stroke-linejoin: round;
+}
+
+.beach-sketch .sketch-arm {
+    fill: none !important;
+    stroke: #c58d83 !important;
+    stroke-width: 3.6 !important;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.beach-sketch .sketch-bride .sketch-arm {
+    stroke: #fff9ed !important;
+}
+
+.beach-sketch .sketch-hand {
+    fill: #f8d6c6 !important;
+    stroke: #b77f79 !important;
+    stroke-width: 1 !important;
+}
+
+.beach-sketch .sketch-eye,
+.beach-sketch .anime-smile {
+    fill: none !important;
+    stroke: #5a4750 !important;
+    stroke-width: 2 !important;
+    stroke-linecap: round;
+}
+
+.beach-sketch .sketch-blush {
+    fill: none !important;
+    stroke: #da9b98 !important;
+    stroke-width: 2.1 !important;
+    stroke-linecap: round;
+    opacity: .8;
+}
+
+.beach-sketch .sketch-mouth {
+    fill: #d9827f !important;
+    stroke: #9f5d62 !important;
+    stroke-width: .9 !important;
+}
+
+.beach-sketch .sketch-veil {
+    fill: rgba(255, 250, 240, .24) !important;
+    stroke: rgba(255, 250, 240, .85) !important;
+    stroke-width: 1.2 !important;
+}
+
+.beach-sketch .bouquet-flower {
+    fill: #fff9ee !important;
+    stroke: #c58f87 !important;
+    stroke-width: 1.1 !important;
+}
+
+.beach-sketch .bouquet-flower.small {
+    fill: #f8e3dc !important;
+}
+
+.beach-sketch .bouquet-leaf {
+    fill: #8fab91 !important;
+    stroke: #66806f !important;
+    stroke-width: 1 !important;
+}
+
+.beach-sketch .bouquet-ribbon {
+    fill: none !important;
+    stroke: #d28c84 !important;
+    stroke-width: 1.5 !important;
+    stroke-linecap: round;
+}
+
+/* Shape-first manga rendering: filled masses appear together, with only a few soft marks. */
+.envelope-animation.opened .sketch-couple {
+    animation: coupleJourney 7s cubic-bezier(.2, .75, .18, 1) both;
+}
+
+.envelope-animation.opened .sketch-bride,
+.envelope-animation.opened .sketch-groom {
+    opacity: 1 !important;
+}
+
+.envelope-animation.opened .sketch-hair,
+.envelope-animation.opened .sketch-dress,
+.envelope-animation.opened .sketch-suit,
+.envelope-animation.opened .sketch-face,
+.envelope-animation.opened .sketch-lapel,
+.envelope-animation.opened .sketch-dress-detail,
+.envelope-animation.opened .sketch-hair-highlight,
+.envelope-animation.opened .sketch-dress-shadow,
+.envelope-animation.opened .sketch-suit-shadow {
+    animation: none !important;
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+}
+
+.beach-sketch .sketch-couple path,
+.beach-sketch .sketch-couple circle {
+    vector-effect: none;
+}
+
+.beach-sketch .sketch-hair,
+.beach-sketch .sketch-bangs,
+.beach-sketch .sketch-dress,
+.beach-sketch .sketch-suit {
+    stroke-width: 1 !important;
+}
+
+.beach-sketch .sketch-hair-highlight,
+.beach-sketch .sketch-dress-shadow,
+.beach-sketch .sketch-suit-shadow {
+    opacity: .66;
+}
+
+.beach-sketch .sketch-veil {
+    stroke-width: .85 !important;
+    opacity: .52 !important;
+}
+
+.beach-sketch .sketch-couple .sketch-neck,
+.beach-sketch .sketch-couple .sketch-leg,
+.beach-sketch .sketch-couple .sketch-trouser,
+.beach-sketch .sketch-couple .sketch-shoe {
+    opacity: .72;
+}
+
+/* Line correction: silhouettes carry the shape, interior marks stay quiet. */
+.beach-sketch .sketch-couple .sketch-hair,
+.beach-sketch .sketch-couple .sketch-hair-highlight,
+.beach-sketch .sketch-couple .sketch-bangs,
+.beach-sketch .sketch-couple .sketch-skin,
+.beach-sketch .sketch-couple .sketch-dress,
+.beach-sketch .sketch-couple .sketch-dress-shadow,
+.beach-sketch .sketch-couple .sketch-sleeve,
+.beach-sketch .sketch-couple .sketch-suit,
+.beach-sketch .sketch-couple .sketch-suit-shadow,
+.beach-sketch .sketch-couple .sketch-shirt,
+.beach-sketch .sketch-couple .sketch-bow,
+.beach-sketch .sketch-couple .sketch-hand,
+.beach-sketch .sketch-couple .sketch-shoe,
+.beach-sketch .sketch-couple .bouquet-flower,
+.beach-sketch .sketch-couple .bouquet-leaf {
+    stroke: none !important;
+}
+
+.beach-sketch .sketch-couple .sketch-hair,
+.beach-sketch .sketch-couple .sketch-bangs {
+    fill: #6b525b !important;
+}
+
+.beach-sketch .sketch-couple .sketch-skin {
+    fill: #f6d1c0 !important;
+}
+
+.beach-sketch .sketch-couple .sketch-dress {
+    fill: #fff8ed !important;
+}
+
+.beach-sketch .sketch-couple .sketch-suit {
+    fill: #405b65 !important;
+}
+
+.beach-sketch .sketch-couple .sketch-dress-shadow {
+    fill: #ead0ca !important;
+}
+
+.beach-sketch .sketch-couple .sketch-suit-shadow {
+    fill: #304a54 !important;
+}
+
+.beach-sketch .sketch-couple .sketch-eye,
+.beach-sketch .sketch-couple .anime-smile,
+.beach-sketch .sketch-couple .sketch-blush,
+.beach-sketch .sketch-couple .sketch-mouth,
+.beach-sketch .sketch-couple .sketch-dress-detail,
+.beach-sketch .sketch-couple .sketch-lapel,
+.beach-sketch .sketch-couple .sketch-bow,
+.beach-sketch .sketch-couple .sketch-hands {
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+.beach-sketch .sketch-couple .sketch-dress-detail,
+.beach-sketch .sketch-couple .sketch-lapel {
+    fill: none !important;
+    stroke: rgba(126, 82, 87, .42) !important;
+    stroke-width: 1 !important;
+}
+
+.beach-sketch .sketch-couple .sketch-eye,
+.beach-sketch .sketch-couple .anime-smile {
+    stroke: #58434c !important;
+    stroke-width: 1.7 !important;
+}
+
+.beach-sketch .sketch-couple .sketch-blush {
+    stroke: #d58e91 !important;
+    stroke-width: 1.5 !important;
+}
+
+.beach-sketch .sketch-couple .sketch-mouth {
+    fill: #d47d7e !important;
+    stroke: #a15f66 !important;
+    stroke-width: .7 !important;
+}
+
+.beach-sketch .sketch-couple .sketch-arm {
+    stroke-width: 2.4 !important;
+    stroke-linecap: round !important;
+}
+
+.beach-sketch .sketch-couple .sketch-neck,
+.beach-sketch .sketch-couple .sketch-leg,
+.beach-sketch .sketch-couple .sketch-trouser {
+    stroke: #896b6c !important;
+    stroke-width: 1.2 !important;
+    stroke-linecap: round !important;
+}
+
+.beach-sketch .sketch-couple .sketch-veil {
+    fill: rgba(255, 249, 239, .2) !important;
+    stroke: rgba(255, 249, 239, .56) !important;
+    stroke-width: .8 !important;
+}
+
+/* The current character draft is intentionally kept out of the opening scene. */
+.beach-sketch .sketch-couple {
+    display: none !important;
+}
+
+.beach-sketch .sketch-couple,
+.beach-sketch .sketch-bride,
+.beach-sketch .sketch-groom,
+.beach-sketch .sketch-bouquet,
+.beach-sketch .sketch-hands {
+    display: none !important;
+    animation: none !important;
+}
+
+.beach-sketch {
+    background:
+        radial-gradient(circle at 50% 28%, rgba(255, 237, 193, .22), transparent 25%),
+        linear-gradient(180deg, rgba(18, 73, 83, .12), rgba(248, 221, 183, .08));
+    border-radius: 50%;
+}
+
+.beach-sketch svg {
+    opacity: .92;
+}
+
+/* One compact opening timeline. The scene is calm; only the paper and sea move. */
+.envelope-animation.opened .envelope-wrapper {
+    animation: openingHeroCompact 4.8s cubic-bezier(.22, .72, .2, 1) both;
+}
+
+.envelope-animation.opened .envelope-flap {
+    animation: flapReleaseCompact 1s cubic-bezier(.18, .8, .2, 1) .18s both;
+}
+
+.envelope-animation.opened .envelope-letter {
+    animation: letterLiftCompact 1.2s cubic-bezier(.18, .8, .2, 1) .34s both;
+}
+
+.envelope-animation.opened .envelope-body {
+    animation: paperTurnCompact 1.15s ease-in 1.05s both;
+}
+
+.envelope-animation.opened .envelope {
+    animation: envelopeDisappearCompact 1.1s ease-in .95s both;
+}
+
+.envelope-animation.opened .ticket-copy,
+.envelope-animation.opened .ticket-perforation {
+    animation: ticketFadeCompact .55s ease-out .72s both;
+}
+
+.envelope-animation.opened .opening-caption,
+.envelope-animation.opened .envelope-hint {
+    animation-duration: 2.4s;
+}
+
+.envelope-animation.opened .beach-sketch {
+    animation: sceneRevealCompact 4.8s ease-out both;
+}
+
+.envelope-animation.opened .sketch-sparkles,
+.envelope-animation.opened .film-dust,
+.envelope-animation.opened .tide-lines {
+    animation-duration: 2.8s;
+}
+
+.envelope-animation.opened .sketch-couple,
+.envelope-animation.opened .sketch-bouquet,
+.envelope-animation.opened .sketch-hands {
+    display: none !important;
+    animation: none !important;
+}
+
+@keyframes openingHeroCompact {
+    0% { transform: scale(1.18); opacity: 1; }
+    34% { transform: scale(1.08); opacity: 1; }
+    100% { transform: scale(.72) translateY(-24px); opacity: 0; }
+}
+
+@keyframes flapReleaseCompact {
+    0% { transform: rotateX(0); opacity: 1; }
+    45% { transform: rotateX(-56deg); opacity: .9; }
+    100% { transform: rotateX(-92deg) translateY(-10px); opacity: 0; }
+}
+
+@keyframes letterLiftCompact {
+    0% { transform: translate(-50%, -50%) translateY(0); opacity: 1; }
+    60% { transform: translate(-50%, -50%) translateY(-18px); opacity: 1; }
+    100% { transform: translate(-50%, -50%) translateY(-58px); opacity: 0; }
+}
+
+@keyframes paperTurnCompact {
+    0% { transform: scale(1) rotate(0); opacity: 1; }
+    100% { transform: scale(.72) rotate(-5deg); opacity: 0; }
+}
+
+@keyframes envelopeDisappearCompact {
+    0% { transform: translateY(0) rotateY(0); opacity: 1; }
+    100% { transform: translateY(-22px) rotateY(14deg); opacity: 0; }
+}
+
+@keyframes ticketFadeCompact {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes sceneRevealCompact {
+    0% { opacity: .35; transform: translate(-50%, 12px) scale(.98); }
+    32% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    82% { opacity: .9; transform: translate(-50%, -3px) scale(1.02); }
+    100% { opacity: 0; transform: translate(-50%, -10px) scale(1.04); }
+}
+
+.beach-sketch .letter-envelope,
+.beach-sketch .letter-fold,
+.beach-sketch .letter-stamp,
+.beach-sketch .letter-glow {
+    vector-effect: non-scaling-stroke;
+}
+
+.beach-sketch .sketch-bride,
+.beach-sketch .sketch-groom {
+    transform-box: fill-box;
+}
+
+.beach-sketch .sketch-bride {
+    animation-timing-function: cubic-bezier(.35, .1, .65, .9);
+}
+
+.beach-sketch .sketch-groom {
+    animation-timing-function: cubic-bezier(.35, .1, .65, .9);
+}
+
+.beach-sketch .sketch-bouquet {
+    animation-timing-function: cubic-bezier(.4, .1, .6, .9);
+}
+
+.beach-sketch .sketch-veil {
+    animation-timing-function: cubic-bezier(.25, .1, .25, 1);
+}
+
+.beach-sketch .sketch-horizon,
+.beach-sketch .sketch-wave,
+.beach-sketch .sketch-wave-back,
+.beach-sketch .sketch-sand,
+.beach-sketch .sketch-dress,
+.beach-sketch .sketch-suit,
+.beach-sketch .sketch-hair,
+.beach-sketch .sketch-face,
+.beach-sketch .sketch-lapel,
+.beach-sketch .sketch-dress-detail,
+.beach-sketch .bouquet-stems,
+.beach-sketch .sketch-sparkles path,
+.beach-sketch .sketch-gulls path,
+.beach-sketch .sketch-seagrass path {
+    vector-effect: non-scaling-stroke;
+}

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>婚礼请柬 - 管理后台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .header {
+            background: linear-gradient(135deg, #d4a5a5, #c9b1d0);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header h1 { font-size: 20px; font-weight: 500; }
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #4caf50;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-3px); }
+        .stat-card .icon { font-size: 28px; margin-bottom: 10px; }
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #d4a5a5;
+            margin-bottom: 5px;
+        }
+        .stat-card .label { font-size: 13px; color: #888; }
+        .stat-card .unread {
+            display: inline-block;
+            background: #ff5252;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 5px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .tab {
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        .tab.active {
+            background: linear-gradient(135deg, #d4a5a5, #c9b1d0);
+            color: white;
+        }
+        .tab:hover:not(.active) { background: #f5f5f5; }
+        .content-area {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            min-height: 400px;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .item-card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .item-card:hover { border-color: #d4a5a5; }
+        .item-card.unread {
+            border-left: 4px solid #ff5252;
+            background: #fff5f5;
+        }
+        .item-card .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .item-card .item-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .item-card .item-time {
+            font-size: 12px;
+            color: #888;
+        }
+        .item-card .item-content {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .item-card .item-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .btn-small {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-read {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .btn-read:hover { background: #c8e6c9; }
+        .btn-delete {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .btn-delete:hover { background: #ffcdd2; }
+        .status-accept {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .status-decline {
+            display: inline-block;
+            background: #ffebee;
+            color: #c62828;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+        .empty-state .empty-icon { font-size: 48px; margin-bottom: 15px; }
+        .refresh-btn {
+            background: linear-gradient(135deg, #d4a5a5, #c9b1d0);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .refresh-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(212,165,165,0.4); }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+        }
+        .notification.show { transform: translateX(0); }
+        .notification .notif-icon { font-size: 24px; }
+        .notification .notif-text { font-size: 14px; }
+        .visitor-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .visitor-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+        .export-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        .export-btn:hover { background: #388e3c; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💒 婚礼请柬管理后台</h1>
+        <div style="display: flex; align-items: center;">
+            <button class="refresh-btn" onclick="refreshData()">🔄 刷新</button>
+            <button class="export-btn" onclick="exportData()">📥 导出数据</button>
+            <div class="live-badge">
+                <span class="live-dot"></span>
+                <span>实时更新</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">👥</div>
+                <div class="number" id="totalVisitors">0</div>
+                <div class="label">访问人数</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">💌</div>
+                <div class="number" id="totalRsvp">0</div>
+                <div class="label">RSVP回复 <span class="unread" id="unreadRsvp" style="display:none">0</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">✅</div>
+                <div class="number" id="acceptedRsvp">0</div>
+                <div class="label">确认出席</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">❌</div>
+                <div class="number" id="declinedRsvp">0</div>
+                <div class="label">遗憾缺席</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">💝</div>
+                <div class="number" id="totalWishes">0</div>
+                <div class="label">祝福数量 <span class="unread" id="unreadWishes" style="display:none">0</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🎮</div>
+                <div class="number" id="totalGames">0</div>
+                <div class="label">游戏参与</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('rsvp')">💌 RSVP回复</button>
+            <button class="tab" onclick="switchTab('wishes')">💝 祝福留言</button>
+            <button class="tab" onclick="switchTab('tree')">🌳 许愿树</button>
+            <button class="tab" onclick="switchTab('food')">🍽️ 菜品偏好</button>
+            <button class="tab" onclick="switchTab('seats')">💺 座位选择</button>
+            <button class="tab" onclick="switchTab('visitors')">👥 访客记录</button>
+        </div>
+
+        <div class="content-area">
+            <div class="tab-content active" id="rsvp-tab">
+                <div id="rsvp-list"></div>
+            </div>
+            <div class="tab-content" id="wishes-tab">
+                <div id="wishes-list"></div>
+            </div>
+            <div class="tab-content" id="tree-tab">
+                <div id="tree-list"></div>
+            </div>
+            <div class="tab-content" id="food-tab">
+                <div id="food-list"></div>
+            </div>
+            <div class="tab-content" id="seats-tab">
+                <div id="seats-list"></div>
+            </div>
+            <div class="tab-content" id="visitors-tab">
+                <div id="visitors-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <span class="notif-icon" id="notifIcon">💌</span>
+        <span class="notif-text" id="notifText">新消息</span>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let allData = { rsvp: [], wishes: [], treeWishes: [], visitors: [], foodPrefs: [], seatSelections: [] };
+
+        // 连接成功
+        socket.on('connect', () => {
+            console.log('已连接到服务器');
+            socket.emit('getAllData');
+            socket.emit('getStats');
+        });
+
+        // 初始化数据
+        socket.on('allData', (data) => {
+            allData = data;
+            renderAll();
+        });
+
+        // 统计信息
+        socket.on('stats', (stats) => {
+            document.getElementById('totalVisitors').textContent = stats.totalVisitors;
+            document.getElementById('totalRsvp').textContent = stats.totalRsvp;
+            document.getElementById('acceptedRsvp').textContent = stats.acceptedRsvp;
+            document.getElementById('declinedRsvp').textContent = stats.declinedRsvp;
+            document.getElementById('totalWishes').textContent = stats.totalWishes;
+            document.getElementById('totalGames').textContent = stats.totalGameScores || 0;
+
+            if (stats.unreadRsvp > 0) {
+                document.getElementById('unreadRsvp').style.display = 'inline';
+                document.getElementById('unreadRsvp').textContent = stats.unreadRsvp;
+            } else {
+                document.getElementById('unreadRsvp').style.display = 'none';
+            }
+
+            if (stats.unreadWishes > 0) {
+                document.getElementById('unreadWishes').style.display = 'inline';
+                document.getElementById('unreadWishes').textContent = stats.unreadWishes;
+            } else {
+                document.getElementById('unreadWishes').style.display = 'none';
+            }
+        });
+
+        // 实时新RSVP
+        socket.on('newRsvp', (rsvp) => {
+            allData.rsvp.unshift(rsvp);
+            renderRsvp();
+            showNotification(rsvp.status === 'accept' ? '✅' : '❌',
+                `${rsvp.name} ${rsvp.status === 'accept' ? '确认出席' : '遗憾缺席'}`);
+            socket.emit('getStats');
+        });
+
+        // 实时新祝福
+        socket.on('newWish', (wish) => {
+            allData.wishes.unshift(wish);
+            renderWishes();
+            showNotification('💝', `${wish.name} 送上了祝福`);
+            socket.emit('getStats');
+        });
+
+        // 实时许愿树祝福
+        socket.on('newTreeWish', (wish) => {
+            allData.treeWishes.unshift(wish);
+            renderTreeWishes();
+            showNotification('🌳', `${wish.name} 在许愿树挂上了祝福`);
+            socket.emit('getStats');
+        });
+
+        // 实时新菜品偏好
+        socket.on('newFoodPref', (pref) => {
+            allData.foodPrefs.unshift(pref);
+            renderFoodPrefs();
+            showNotification('🍽️', `${pref.name} 提交了菜品偏好`);
+        });
+
+        // 实时座位选择
+        socket.on('newSeatSelect', (seat) => {
+            allData.seatSelections.push(seat);
+            renderSeats();
+            showNotification('💺', `${seat.name} 选择了座位 ${seat.seat}`);
+        });
+
+        // 实时访客
+        socket.on('newVisitor', (visitor) => {
+            allData.visitors.push(visitor);
+            renderVisitors();
+            socket.emit('getStats');
+        });
+
+        // 切换标签
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        // 渲染所有数据
+        function renderAll() {
+            renderRsvp();
+            renderWishes();
+            renderTreeWishes();
+            renderFoodPrefs();
+            renderSeats();
+            renderVisitors();
+        }
+
+        // 渲染RSVP
+        function renderRsvp() {
+            const container = document.getElementById('rsvp-list');
+            if (allData.rsvp.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>暂无RSVP回复</p></div>';
+                return;
+            }
+            container.innerHTML = allData.rsvp.map(r => `
+                <div class="item-card ${r.read ? '' : 'unread'}" data-id="${r.id}">
+                    <div class="item-header">
+                        <span class="item-name">${r.name || '匿名'}</span>
+                        <span class="item-time">${formatTime(r.timestamp)}</span>
+                    </div>
+                    <div class="item-content">
+                        <span class="status-${r.status}">${r.status === 'accept' ? '✅ 确认出席' : '❌ 遗憾缺席'}</span>
+                        ${r.count ? `<span style="margin-left:10px;color:#888">人数: ${r.count}</span>` : ''}
+                    </div>
+                    <div class="item-actions">
+                        ${!r.read ? `<button class="btn-small btn-read" onclick="markRead('rsvp','${r.id}')">标为已读</button>` : ''}
+                        <button class="btn-small btn-delete" onclick="deleteItem('rsvp','${r.id}')">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染祝福
+        function renderWishes() {
+            const container = document.getElementById('wishes-list');
+            if (allData.wishes.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">💝</div><p>暂无祝福留言</p></div>';
+                return;
+            }
+            container.innerHTML = allData.wishes.map(w => `
+                <div class="item-card ${w.read ? '' : 'unread'}" data-id="${w.id}">
+                    <div class="item-header">
+                        <span class="item-name">${w.name || '匿名'}</span>
+                        <span class="item-time">${formatTime(w.timestamp)}</span>
+                    </div>
+                    <div class="item-content">${w.message}</div>
+                    <div class="item-actions">
+                        ${!w.read ? `<button class="btn-small btn-read" onclick="markRead('wishes','${w.id}')">标为已读</button>` : ''}
+                        <button class="btn-small btn-delete" onclick="deleteItem('wishes','${w.id}')">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染许愿树
+        function renderTreeWishes() {
+            const container = document.getElementById('tree-list');
+            if (allData.treeWishes.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">🌳</div><p>暂无许愿树祝福</p></div>';
+                return;
+            }
+            container.innerHTML = allData.treeWishes.map(w => `
+                <div class="item-card ${w.read ? '' : 'unread'}" data-id="${w.id}" style="border-left: 4px solid ${w.color || '#c8e6c9'}">
+                    <div class="item-header">
+                        <span class="item-name">${w.name || '匿名'}</span>
+                        <span class="item-time">${formatTime(w.timestamp)}</span>
+                    </div>
+                    <div class="item-content">${w.message}</div>
+                    <div class="item-actions">
+                        ${!w.read ? `<button class="btn-small btn-read" onclick="markRead('treeWishes','${w.id}')">标为已读</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染菜品偏好
+        function renderFoodPrefs() {
+            const container = document.getElementById('food-list');
+            if (allData.foodPrefs.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">🍽️</div><p>暂无菜品偏好</p></div>';
+                return;
+            }
+            const foodLabels = { meat: '荤食为主', veg: '素食为主', seafood: '海鲜过敏', spicy: '不吃辣', halal: '清真' };
+            container.innerHTML = allData.foodPrefs.map(p => `
+                <div class="item-card" data-id="${p.id}">
+                    <div class="item-header">
+                        <span class="item-name">${p.name || '匿名'}</span>
+                        <span class="item-time">${formatTime(p.timestamp)}</span>
+                    </div>
+                    <div class="item-content">
+                        ${(p.preferences || []).map(f => `<span style="margin-right:8px">${foodLabels[f] || f}</span>`).join('')}
+                        ${p.note ? `<p style="margin-top:8px;color:#888">备注: ${p.note}</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染座位
+        function renderSeats() {
+            const container = document.getElementById('seats-list');
+            if (allData.seatSelections.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">💺</div><p>暂无座位选择</p></div>';
+                return;
+            }
+            container.innerHTML = allData.seatSelections.map(s => `
+                <div class="item-card" data-id="${s.id}">
+                    <div class="item-header">
+                        <span class="item-name">${s.name || '匿名'}</span>
+                        <span class="item-time">${formatTime(s.timestamp)}</span>
+                    </div>
+                    <div class="item-content">
+                        <span style="font-size:20px;font-weight:bold;color:#d4a5a5">${s.seat}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染访客
+        function renderVisitors() {
+            const container = document.getElementById('visitors-list');
+            if (allData.visitors.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>暂无访客</p></div>';
+                return;
+            }
+            container.innerHTML = allData.visitors.slice().reverse().map(v => `
+                <div class="visitor-item">
+                    <span>${v.ip || '未知IP'}</span>
+                    <span>${formatTime(v.timestamp)}</span>
+                </div>
+            `).join('');
+        }
+
+        // 标记已读
+        function markRead(type, id) {
+            socket.emit('markRead', type, id);
+            const card = document.querySelector(`[data-id="${id}"]`);
+            if (card) card.classList.remove('unread');
+            socket.emit('getStats');
+        }
+
+        // 删除项目
+        function deleteItem(type, id) {
+            if (confirm('确定要删除吗？')) {
+                const index = allData[type].findIndex(i => i.id === id);
+                if (index > -1) {
+                    allData[type].splice(index, 1);
+                    renderAll();
+                    socket.emit('getStats');
+                }
+            }
+        }
+
+        // 显示通知
+        function showNotification(icon, text) {
+            const notif = document.getElementById('notification');
+            document.getElementById('notifIcon').textContent = icon;
+            document.getElementById('notifText').textContent = text;
+            notif.classList.add('show');
+            setTimeout(() => notif.classList.remove('show'), 3000);
+        }
+
+        // 刷新数据
+        function refreshData() {
+            socket.emit('getAllData');
+            socket.emit('getStats');
+        }
+
+        // 导出数据
+        function exportData() {
+            const csv = generateCSV();
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `wedding-data-${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+        }
+
+        function generateCSV() {
+            let csv = '类型,姓名,内容,状态,时间\n';
+            allData.rsvp.forEach(r => {
+                csv += `RSVP,${r.name},${r.count || ''}人,${r.status === 'accept' ? '出席' : '缺席'},${formatTime(r.timestamp)}\n`;
+            });
+            allData.wishes.forEach(w => {
+                csv += `祝福,${w.name},${w.message},,\n`;
+            });
+            return csv;
+        }
+
+        // 格式化时间
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            return date.toLocaleString('zh-CN', {
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // 每30秒自动刷新
+        setInterval(refreshData, 30000);
+    </script>
+</body>
+</html>
