@@ -1,0 +1,25 @@
+{
+  "rsvp": [],
+  "wishes": [],
+  "treeWishes": [],
+  "visitors": [
+    {
+      "id": "1786908622098-492kf9",
+      "timestamp": "2026-08-16T19:30:22.098Z",
+      "ip": "::1"
+    },
+    {
+      "id": "1786908631952-guxqei",
+      "timestamp": "2026-08-16T19:30:31.952Z",
+      "ip": "::1"
+    },
+    {
+      "id": "1786908759132-2qtndg",
+      "timestamp": "2026-08-16T19:32:39.132Z",
+      "ip": "::1"
+    }
+  ],
+  "foodPrefs": [],
+  "seatSelections": [],
+  "gameScores": []
+}

@@ -3,7 +3,7 @@ let socket = null;
 let isConnected = false;
 
 try {
-    socket = io();
+    socket = io(window.LIVE_API_URL || undefined);
     socket.on('connect', () => {
         console.log('已连接到服务器');
         isConnected = true;

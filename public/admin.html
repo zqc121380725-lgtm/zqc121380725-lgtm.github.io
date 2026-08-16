@@ -323,7 +323,7 @@
     <script src="/live-config.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        const socket = io(window.LIVE_API_URL || undefined);
         let allData = { rsvp: [], wishes: [], treeWishes: [], visitors: [], foodPrefs: [], seatSelections: [] };
 
         // 连接成功
