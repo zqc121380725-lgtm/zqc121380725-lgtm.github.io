@@ -6651,3 +6651,68 @@ body:has(.envelope-animation:not(.opened)) .petals-container {
 .featured-photo .placeholder-img.featured > span {
     display: none !important;
 }
+
+/* Keep portrait photos and their quiet type area as separate regions. */
+.gallery-section .gallery-grid .gallery-item.portrait {
+    aspect-ratio: 1.2 / 1 !important;
+    overflow: visible !important;
+}
+
+.gallery-section .gallery-grid .gallery-item.portrait .gallery-photo-shell {
+    inset: 0 38% 0 0 !important;
+    width: auto !important;
+    overflow: hidden !important;
+    background: #f4f0e4 !important;
+}
+
+.gallery-section .gallery-grid .gallery-item.portrait .gallery-caption-space {
+    position: absolute !important;
+    inset: 0 0 0 auto !important;
+    z-index: 8 !important;
+    display: flex !important;
+    width: 38% !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    padding: 14px 10px !important;
+    background: #e8f0ec !important;
+}
+
+.gallery-section .gallery-grid .gallery-item.portrait .gallery-caption-space .gallery-caption {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #174858 !important;
+    background: transparent !important;
+    font: clamp(15px, 1.5vw, 23px) / 1.5 'Ma Shan Zheng', 'STKaiti', 'KaiTi', cursive !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+    text-shadow: 0 1px 0 rgba(255,255,255,.9) !important;
+}
+
+.gallery-section .gallery-grid .gallery-item.portrait .placeholder-img > span,
+.gallery-section .gallery-grid .gallery-item.portrait > .gallery-caption {
+    display: none !important;
+}
+
+@media (max-width: 899px) {
+    .gallery-section .gallery-grid .gallery-item.portrait .gallery-photo-shell {
+        inset: 0 36% 0 0 !important;
+    }
+
+    .gallery-section .gallery-grid .gallery-item.portrait .gallery-caption-space {
+        width: 36% !important;
+        padding: 10px 6px !important;
+    }
+
+    .gallery-section .gallery-grid .gallery-item.portrait .gallery-caption-space .gallery-caption {
+        font-size: clamp(15px, 4vw, 19px) !important;
+    }
+}
