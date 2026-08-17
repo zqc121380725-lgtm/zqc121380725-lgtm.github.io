@@ -499,9 +499,9 @@ function showSuccessModal(emoji, title, message) {
 var currentImageIndex = 0;
 var galleryImages = [
     { src: 'photos-optimized/1786895775746.webp', caption: '赵锦江 · 滕玥' },
-    { src: 'photos-optimized/1786901043816.webp', caption: '这一页，写满心动' },
-    { src: 'photos-optimized/1786901043859.webp', caption: '爱在眉眼，也在余生' },
-    { src: 'photos-optimized/last-wedding-photo.webp', caption: '余生的镜头，只拍你' },
+    { src: 'photos-optimized/1786901043714.webp', caption: '这一页，写满心动' },
+    { src: 'photos-optimized/1786901043721.webp', caption: '爱在眉眼，也在余生' },
+    { src: 'photos-optimized/1786901043757.webp', caption: '余生的镜头，只拍你' },
     { src: 'photos-optimized/1786901044033.webp', caption: '肩并肩，看潮汐起落' },
     { src: 'photos-optimized/1786901044052.webp', caption: '把远方写进我们的誓言' },
     { src: 'photos-optimized/1786901044128.webp', caption: '海岸线收好我们的秘密' }
