@@ -241,7 +241,13 @@ function handleRSVP(status) {
     var name = document.getElementById('guestName');
     var count = document.getElementById('guestCount');
     var guestName = name ? name.value || '宾客' : '宾客';
-    var guestCount = count ? count.value || '1' : '1';
+    var guestCount = count ? parseInt(count.value, 10) : 1;
+
+    if (!Number.isInteger(guestCount) || guestCount < 1 || guestCount > 99) {
+        alert('请输入 1 至 99 之间的出席人数');
+        if (count) count.focus();
+        return;
+    }
 
     socketEmit('rsvp', { name: guestName, status: status, count: guestCount });
 
@@ -752,11 +758,13 @@ function toggleMusic() {
 
 function initMusic() {
     var audio = document.getElementById('backgroundMusic');
-    if (!audio) return;
+    if (!audio || audio.dataset.initialized === 'true') return;
+    audio.dataset.initialized = 'true';
     audio.volume = 0.55;
     audio.addEventListener('play', syncMusicButton);
     audio.addEventListener('pause', syncMusicButton);
     audio.addEventListener('ended', syncMusicButton);
+    audio.addEventListener('canplay', playBackgroundMusic, { once: true });
     syncMusicButton();
     playBackgroundMusic();
 
@@ -770,6 +778,10 @@ function initMusic() {
     document.addEventListener('pointerdown', retryAutoplay, { once: true, passive: true });
     document.addEventListener('touchstart', retryAutoplay, { once: true, passive: true });
     document.addEventListener('keydown', retryAutoplay, { once: true });
+    window.addEventListener('pageshow', playBackgroundMusic);
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) playBackgroundMusic();
+    });
 }
 
 // ========== 地图导航 ==========
@@ -816,6 +828,8 @@ function initKeyboard() {
     });
 }
 
+initMusic();
+
 // ========== 页面初始化 ==========
 document.addEventListener('DOMContentLoaded', function() {
     createPetals();
@@ -824,7 +838,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCountdown();
     initInfoCards();
     initGallery();
-    initMusic();
     initKeyboard();
     initBackToTop();
     setInterval(updateCountdown, 1000);

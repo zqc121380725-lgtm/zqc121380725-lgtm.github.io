@@ -291,7 +291,7 @@
                     <p>请告诉我们您是否能够出席</p>
                     <div class="rsvp-fields">
                         <input type="text" id="guestName" placeholder="您的姓名">
-                        <select id="guestCount" aria-label="出席人数"><option value="1">1 位出席</option><option value="2">2 位出席</option><option value="3">3 位出席</option><option value="4">4 位出席</option></select>
+                        <input type="number" id="guestCount" aria-label="出席人数" placeholder="出席人数" min="1" max="99" step="1" inputmode="numeric" value="1">
                     </div>
                     <div class="rsvp-buttons">
                         <button class="btn btn-accept" onclick="handleRSVP('accept')">
@@ -389,6 +389,6 @@
 
     <script src="/live-config.js"></script>
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" crossorigin="anonymous"></script>
-    <script src="script.js?v=20260817-old-money-14"></script>
+    <script src="script.js?v=20260817-old-money-15"></script>
 </body>
 </html>
