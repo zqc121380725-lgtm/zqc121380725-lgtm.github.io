@@ -5083,7 +5083,39 @@ body:has(.envelope-animation:not(.opened)) .petals-container {
     background-position: center;
     transform-origin: left center;
     backface-visibility: hidden;
-    will-change: transform;
+    will-change: auto;
+}
+
+.gallery-grid .gallery-item.is-dragging .page-front,
+.gallery-grid .gallery-item .page-turn {
+    will-change: transform, opacity;
+}
+
+body.gallery-turning .petals-container *,
+body.gallery-turning .glow,
+body.gallery-turning .film-dust,
+body.gallery-turning .tide-lines {
+    animation-play-state: paused !important;
+}
+
+@media (max-width: 899px) {
+    .gallery-grid .gallery-item .page-turn.next {
+        animation-name: mobilePageTurnNext;
+    }
+
+    .gallery-grid .gallery-item .page-turn.prev {
+        animation-name: mobilePageTurnPrev;
+    }
+
+    @keyframes mobilePageTurnNext {
+        from { transform: translate3d(0, 0, 0); opacity: 1; }
+        to { transform: translate3d(-102%, 0, 0); opacity: .2; }
+    }
+
+    @keyframes mobilePageTurnPrev {
+        from { transform: translate3d(0, 0, 0); opacity: 1; }
+        to { transform: translate3d(102%, 0, 0); opacity: .2; }
+    }
 }
 
 .gallery-grid .gallery-item .gallery-next-page {

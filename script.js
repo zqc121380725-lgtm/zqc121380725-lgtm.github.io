@@ -455,27 +455,57 @@ function showSuccessModal(emoji, title, message) {
 // ========== 相册灯箱 ==========
 var currentImageIndex = 0;
 var galleryImages = [
-    { src: 'photos/1786895775746.jpg', caption: '潮声为我们作序' },
-    { src: 'photos/1786901043598.jpg', caption: '风把心事吹向你' },
-    { src: 'photos/1786901043653.jpg', caption: '把寻常日子拍成诗' },
-    { src: 'photos/1786901043709.jpg', caption: '靠近你，也靠近晴朗' },
-    { src: 'photos/1786901043714.jpg', caption: '一束柔光落在肩头' },
-    { src: 'photos/1786901043721.jpg', caption: '从此望向同一片海' },
-    { src: 'photos/1786901043757.jpg', caption: '赵锦江 · 滕玥' },
-    { src: 'photos/1786901043794.jpg', caption: '此刻的风，恰好温柔' },
-    { src: 'photos/1786901043816.jpg', caption: '这一页，写满心动' },
-    { src: 'photos/1786901043859.jpg', caption: '爱在眉眼，也在余生' },
-    { src: 'photos/1786901043907.jpg', caption: '故事还会驶向远方' },
-    { src: 'photos/1786901043949.jpg', caption: '让海风替我们作证' },
-    { src: 'photos/1786901043990.jpg', caption: '沿着星光，牵手去远方' },
-    { src: 'photos/1786901044033.jpg', caption: '肩并肩，看潮汐起落' },
-    { src: 'photos/1786901044052.jpg', caption: '把远方写进我们的誓言' },
-    { src: 'photos/1786901044093.jpg', caption: '下一幕，仍与你同场' },
-    { src: 'photos/1786901044128.jpg', caption: '海岸线收好我们的秘密' },
-    { src: 'photos/1786901044142.jpg', caption: '回眸时，晚风正好' },
-    { src: 'photos/last-wedding-photo.jpg', caption: '余生的镜头，只拍你' }
+    { src: 'photos-optimized/1786895775746.webp', caption: '潮声为我们作序' },
+    { src: 'photos-optimized/1786901043598.webp', caption: '风把心事吹向你' },
+    { src: 'photos-optimized/1786901043653.webp', caption: '把寻常日子拍成诗' },
+    { src: 'photos-optimized/1786901043709.webp', caption: '靠近你，也靠近晴朗' },
+    { src: 'photos-optimized/1786901043714.webp', caption: '一束柔光落在肩头' },
+    { src: 'photos-optimized/1786901043721.webp', caption: '从此望向同一片海' },
+    { src: 'photos-optimized/1786901043757.webp', caption: '赵锦江 · 滕玥' },
+    { src: 'photos-optimized/1786901043794.webp', caption: '此刻的风，恰好温柔' },
+    { src: 'photos-optimized/1786901043816.webp', caption: '这一页，写满心动' },
+    { src: 'photos-optimized/1786901043859.webp', caption: '爱在眉眼，也在余生' },
+    { src: 'photos-optimized/1786901043907.webp', caption: '故事还会驶向远方' },
+    { src: 'photos-optimized/1786901043949.webp', caption: '让海风替我们作证' },
+    { src: 'photos-optimized/1786901043990.webp', caption: '沿着星光，牵手去远方' },
+    { src: 'photos-optimized/1786901044033.webp', caption: '肩并肩，看潮汐起落' },
+    { src: 'photos-optimized/1786901044052.webp', caption: '把远方写进我们的誓言' },
+    { src: 'photos-optimized/1786901044093.webp', caption: '下一幕，仍与你同场' },
+    { src: 'photos-optimized/1786901044128.webp', caption: '海岸线收好我们的秘密' },
+    { src: 'photos-optimized/1786901044142.webp', caption: '回眸时，晚风正好' },
+    { src: 'photos-optimized/last-wedding-photo.webp', caption: '余生的镜头，只拍你' }
 ];
 var totalImages = galleryImages.length;
+var galleryImageCache = {};
+
+function preloadGalleryImage(imageIndex) {
+    var image = galleryImages[imageIndex];
+    if (!image) return Promise.resolve();
+    if (galleryImageCache[image.src]) return galleryImageCache[image.src];
+
+    galleryImageCache[image.src] = new Promise(function(resolve) {
+        var preload = new Image();
+        preload.decoding = 'async';
+        preload.onload = function() {
+            var decoded = preload.decode ? preload.decode().catch(function() {}) : Promise.resolve();
+            decoded.then(resolve);
+        };
+        preload.onerror = resolve;
+        preload.src = image.src;
+    });
+    return galleryImageCache[image.src];
+}
+
+function warmGalleryImages() {
+    var preloadAll = function() {
+        galleryImages.forEach(function(_, index) { preloadGalleryImage(index); });
+    };
+    if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(preloadAll, { timeout: 2500 });
+    } else {
+        window.setTimeout(preloadAll, 800);
+    }
+}
 var galleryDrag = {
     active: false,
     pointerId: null,
@@ -559,8 +589,11 @@ function initInlineGallery(gallery) {
             if (state.animating || item._galleryQueue.length < 2) return;
             state.animating = true;
             var nextIndex = (state.index + direction + item._galleryQueue.length) % item._galleryQueue.length;
+            var nextImageIndex = item._galleryQueue[nextIndex];
             var turnDirection = direction > 0 ? 'next' : 'prev';
-            setImage(nextBox, nextIndex);
+            preloadGalleryImage(nextImageIndex);
+            document.body.classList.add('gallery-turning');
+            setImage(nextBox, nextImageIndex);
             nextBox.className = 'placeholder-img gallery-next-page page-under ' + turnDirection;
             imageBox.classList.add('page-front', 'page-turn', turnDirection);
             window.setTimeout(function() {
@@ -570,7 +603,8 @@ function initInlineGallery(gallery) {
                 nextBox.className = 'placeholder-img gallery-next-page';
                 window.setTimeout(function() {
                     state.animating = false;
-                }, 360);
+                    document.body.classList.remove('gallery-turning');
+                }, 260);
             }, 230);
         }
 
@@ -801,6 +835,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCountdown();
     initInfoCards();
     initGallery();
+    warmGalleryImages();
     initKeyboard();
     initBackToTop();
     setInterval(updateCountdown, 1000);
