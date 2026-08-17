@@ -5,14 +5,19 @@ const express = require('express');
 const { Server } = require('socket.io');
 
 const PORT = Number(process.env.PORT) || 3000;
-const DATA_FILE = path.join(__dirname, 'data.json');
+const DATA_FILE = process.env.DATA_FILE || path.join(__dirname, 'data.json');
 const PUBLIC_DIR = path.join(__dirname, 'public');
+const INITIAL_WISH_LIMIT = 24;
+const STORED_WISH_LIMIT = 500;
+const STORED_VISITOR_LIMIT = 200;
 
 const emptyData = () => ({
     rsvp: [],
     wishes: [],
+    totalWishes: 0,
     treeWishes: [],
     visitors: [],
+    totalVisitors: 0,
     foodPrefs: [],
     seatSelections: [],
     gameScores: []
@@ -21,7 +26,12 @@ const emptyData = () => ({
 function loadData() {
     try {
         const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-        return { ...emptyData(), ...data };
+        const loaded = { ...emptyData(), ...data };
+        loaded.totalWishes = Math.max(Number(loaded.totalWishes) || 0, loaded.wishes.length);
+        loaded.totalVisitors = Math.max(Number(loaded.totalVisitors) || 0, loaded.visitors.length);
+        loaded.wishes = loaded.wishes.slice(-STORED_WISH_LIMIT);
+        loaded.visitors = loaded.visitors.slice(-STORED_VISITOR_LIMIT);
+        return loaded;
     } catch (error) {
         return emptyData();
     }
@@ -47,17 +57,21 @@ function record(type, payload, socket) {
         ip: socket.handshake.address
     };
     data[type].push(item);
+    if (type === 'wishes') {
+        data.totalWishes += 1;
+        data.wishes = data.wishes.slice(-STORED_WISH_LIMIT);
+    }
     saveData();
     return item;
 }
 
 function stats() {
     return {
-        totalVisitors: data.visitors.length,
+        totalVisitors: data.totalVisitors,
         totalRsvp: data.rsvp.length,
         acceptedRsvp: data.rsvp.filter(item => item.status === 'accept').length,
         declinedRsvp: data.rsvp.filter(item => item.status === 'decline').length,
-        totalWishes: data.wishes.length,
+        totalWishes: data.totalWishes,
         unreadRsvp: data.rsvp.filter(item => !item.read).length,
         unreadWishes: data.wishes.filter(item => !item.read).length,
         totalGameScores: data.gameScores.length
@@ -77,11 +91,20 @@ app.get('/admin', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'admin.html')
 app.get('/health', (req, res) => res.json({ ok: true, service: 'wedding-invitation-live' }));
 
 io.on('connection', socket => {
-    const visitor = record('visitors', {}, socket);
+    data.totalVisitors += 1;
+    const visitor = {
+        id: id(),
+        timestamp: new Date().toISOString(),
+        ip: socket.handshake.address
+    };
+    data.visitors.push(visitor);
+    data.visitors = data.visitors.slice(-STORED_VISITOR_LIMIT);
+    saveData();
     io.emit('newVisitor', visitor);
     socket.emit('initData', {
-        wishes: data.wishes,
-        treeWishes: data.treeWishes
+        wishes: data.wishes.slice(-INITIAL_WISH_LIMIT),
+        totalWishes: data.totalWishes,
+        treeWishes: data.treeWishes.slice(-INITIAL_WISH_LIMIT)
     });
 
     socket.on('getAllData', () => socket.emit('allData', data));
@@ -96,7 +119,19 @@ io.on('connection', socket => {
     };
 
     addRecord('rsvp', 'rsvp', 'newRsvp');
-    addRecord('wish', 'wishes', 'newWish');
+    socket.on('wish', payload => {
+        const now = Date.now();
+        if (now - (socket.data.lastWishAt || 0) < 2000) return;
+        const message = String(payload?.message || '').trim().slice(0, 200);
+        if (!message) return;
+        socket.data.lastWishAt = now;
+        const item = record('wishes', {
+            name: String(payload?.name || '匿名').trim().slice(0, 30) || '匿名',
+            message
+        }, socket);
+        io.emit('newWish', item);
+        io.emit('stats', stats());
+    });
     addRecord('treeWish', 'treeWishes', 'newTreeWish');
     addRecord('foodPref', 'foodPrefs', 'newFoodPref');
     addRecord('gameScore', 'gameScores', 'newGameScore');
