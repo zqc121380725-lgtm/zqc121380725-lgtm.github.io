@@ -82,6 +82,7 @@ function initEnvelope() {
             envelope.style.display = 'none';
             resetPageScroll();
             mainContent.classList.add('visible');
+            loadGalleryImages();
             document.documentElement.style.overflow = '';
             document.body.style.overflow = '';
             initScrollAnimations();
@@ -510,16 +511,6 @@ function preloadGalleryImage(imageIndex) {
     return galleryImageCache[image.src];
 }
 
-function warmGalleryImages() {
-    var preloadAll = function() {
-        galleryImages.forEach(function(_, index) { preloadGalleryImage(index); });
-    };
-    if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(preloadAll, { timeout: 2500 });
-    } else {
-        window.setTimeout(preloadAll, 800);
-    }
-}
 var galleryDrag = {
     active: false,
     pointerId: null,
@@ -563,7 +554,6 @@ function initInlineGallery(gallery) {
         item.setAttribute('role', 'listitem');
         item.setAttribute('tabindex', '0');
         item.setAttribute('aria-label', '放大查看：' + image.caption);
-        imageBox.style.backgroundImage = "url('" + image.src + "')";
         if (inlineImage) {
             inlineImage.addEventListener('error', function retryImage() {
                 inlineImage.removeEventListener('error', retryImage);
@@ -581,8 +571,16 @@ function initInlineGallery(gallery) {
             e.preventDefault();
             item.click();
         });
-        preloadGalleryImage(imageIndex);
     });
+}
+
+function loadGalleryImages() {
+    document.querySelectorAll('.gallery-grid img[data-src]').forEach(loadInlineGalleryImage);
+}
+
+function loadInlineGalleryImage(inlineImage) {
+    if (!inlineImage || inlineImage.src || !inlineImage.dataset.src) return;
+    inlineImage.src = inlineImage.dataset.src;
 }
 
 function beginGalleryDrag(e) {
@@ -803,7 +801,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCountdown();
     initInfoCards();
     initGallery();
-    warmGalleryImages();
     initMusic();
     initKeyboard();
     initBackToTop();
