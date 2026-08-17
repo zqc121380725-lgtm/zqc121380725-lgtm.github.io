@@ -1,0 +1,18 @@
+{
+  "name": "wedding-invitation-live",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Wedding invitation with real-time RSVP and guest data dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "optimize:images": "node tools/optimize-images.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.3"
+  }
+}
