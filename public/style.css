@@ -3046,6 +3046,7 @@ body {
 
 .modal-gallery-item .placeholder-img[data-photo] {
     background-image: var(--modal-photo);
+}
 
 /* 弹窗通用 */
 .modal-overlay {
