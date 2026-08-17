@@ -557,12 +557,19 @@ function initInlineGallery(gallery) {
         var imageIndex = parseInt(item.dataset.index, 10) - 1;
         var image = galleryImages[imageIndex];
         var imageBox = item.querySelector('.placeholder-img');
+        var inlineImage = imageBox ? imageBox.querySelector('img') : null;
         if (!image || !imageBox) return;
 
         item.setAttribute('role', 'listitem');
         item.setAttribute('tabindex', '0');
         item.setAttribute('aria-label', '放大查看：' + image.caption);
         imageBox.style.backgroundImage = "url('" + image.src + "')";
+        if (inlineImage) {
+            inlineImage.addEventListener('error', function retryImage() {
+                inlineImage.removeEventListener('error', retryImage);
+                inlineImage.src = image.src + '?retry=' + Date.now();
+            });
+        }
         item.addEventListener('click', function() {
             currentImageIndex = imageIndex;
             updateLightbox();
