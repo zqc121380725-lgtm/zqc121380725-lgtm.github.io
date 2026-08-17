@@ -822,13 +822,49 @@ function openMap() {
 }
 
 function openNavigation(provider) {
-    var destination = '甘肃省兰州市兰州新区丝路华廷禧宴';
+    var destination = '丝路华廷禧宴（绿地乐和城店）';
+    var encodedDestination = encodeURIComponent(destination);
+    var gcjLocation = { latitude: 36.470987, longitude: 103.686997 };
+    var baiduLocation = { latitude: 36.477276, longitude: 103.693386 };
+    var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
     var links = {
-        didi: 'https://a.app.qq.com/o/simple.jsp?pkgname=com.sdu.didi.psnger&g_f=992316',
-        amap: 'https://uri.amap.com/search?keyword=' + encodeURIComponent(destination) + '&view=map&callnative=1',
-        baidu: 'https://api.map.baidu.com/geocoder?address=' + encodeURIComponent(destination) + '&output=html&src=zt20261003.love'
+        amap: {
+            app: isIOS
+                ? 'iosamap://navi?sourceApplication=zt20261003.love&poiname=' + encodedDestination + '&lat=' + gcjLocation.latitude + '&lon=' + gcjLocation.longitude + '&dev=0&style=2'
+                : 'androidamap://navi?sourceApplication=zt20261003.love&poiname=' + encodedDestination + '&lat=' + gcjLocation.latitude + '&lon=' + gcjLocation.longitude + '&dev=0&style=2',
+            fallback: 'https://uri.amap.com/navigation?to=' + gcjLocation.longitude + ',' + gcjLocation.latitude + ',' + encodedDestination + '&mode=car&policy=1&src=zt20261003.love&coordinate=gaode&callnative=1'
+        },
+        baidu: {
+            app: (isIOS ? 'baidumap' : 'bdapp') + '://map/navi?location=' + baiduLocation.latitude + ',' + baiduLocation.longitude + '&coord_type=bd09ll&query=' + encodedDestination + '&src=webapp.zt20261003.love',
+            fallback: 'https://api.map.baidu.com/direction?destination=latlng:' + baiduLocation.latitude + ',' + baiduLocation.longitude + '|name:' + encodedDestination + '&mode=driving&coord_type=bd09ll&region=%E5%85%B0%E5%B7%9E%E6%96%B0%E5%8C%BA&output=html&src=webapp.zt20261003.love'
+        },
+        didi: {
+            app: 'diditaxi://',
+            fallback: 'https://a.app.qq.com/o/simple.jsp?pkgname=com.sdu.didi.psnger&g_f=992316'
+        }
     };
-    if (links[provider]) window.open(links[provider], '_blank', 'noopener');
+    if (!links[provider]) return;
+    closeModal('navigationModal');
+    openAppWithFallback(links[provider].app, links[provider].fallback);
+}
+
+function openAppWithFallback(appUrl, fallbackUrl) {
+    var pageHidden = false;
+    var fallbackTimer;
+
+    function handleVisibilityChange() {
+        if (document.hidden) {
+            pageHidden = true;
+            window.clearTimeout(fallbackTimer);
+        }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    fallbackTimer = window.setTimeout(function() {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        if (!pageHidden) window.location.href = fallbackUrl;
+    }, 1200);
+    window.location.href = appUrl;
 }
 
 // ========== 回到顶部 ==========
