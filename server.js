@@ -66,14 +66,19 @@ function record(type, payload, socket) {
 }
 
 function stats() {
+    const acceptedEntries = data.rsvp.filter(item => item.status === 'accept');
     return {
         totalVisitors: data.totalVisitors,
         totalRsvp: data.rsvp.length,
-        acceptedRsvp: data.rsvp.filter(item => item.status === 'accept').length,
+        acceptedRsvp: acceptedEntries.length,
+        acceptedGuests: acceptedEntries.reduce((total, item) => total + Math.max(Number(item.count) || 1, 1), 0),
         declinedRsvp: data.rsvp.filter(item => item.status === 'decline').length,
         totalWishes: data.totalWishes,
         unreadRsvp: data.rsvp.filter(item => !item.read).length,
         unreadWishes: data.wishes.filter(item => !item.read).length,
+        totalTreeWishes: data.treeWishes.length,
+        totalFoodPrefs: data.foodPrefs.length,
+        totalSeatSelections: data.seatSelections.length,
         totalGameScores: data.gameScores.length
     };
 }
@@ -153,6 +158,17 @@ io.on('connection', socket => {
         const item = data[type].find(entry => entry.id === itemId);
         if (!item) return;
         item.read = true;
+        saveData();
+        io.emit('allData', data);
+        io.emit('stats', stats());
+    });
+
+    socket.on('deleteItem', (type, itemId) => {
+        const deletableTypes = new Set(['rsvp', 'wishes', 'treeWishes', 'foodPrefs', 'seatSelections', 'gameScores']);
+        if (!deletableTypes.has(type) || !Array.isArray(data[type])) return;
+        const index = data[type].findIndex(entry => entry.id === itemId);
+        if (index === -1) return;
+        data[type].splice(index, 1);
         saveData();
         io.emit('allData', data);
         io.emit('stats', stats());
