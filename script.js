@@ -8,6 +8,9 @@ try {
         console.log('已连接到服务器');
         isConnected = true;
     });
+    socket.on('disconnect', () => {
+        isConnected = false;
+    });
     socket.on('initData', (data) => {
         if (data.wishes) data.wishes.forEach(wish => addWishToWall(wish, false));
         if (data.treeWishes) data.treeWishes.forEach(wish => addWishToTree(wish, false));
@@ -26,7 +29,7 @@ try {
 
 // 安全发送Socket消息
 function socketEmit(event, data) {
-    if (socket && isConnected) {
+    if (socket) {
         socket.emit(event, data);
     } else {
         console.log('离线模式:', event, data);
@@ -296,7 +299,7 @@ function sendWallWish() {
     if (!message) { alert('请写下您的祝福'); return; }
 
     socketEmit('wish', { name: name, message: message });
-    if (!isConnected) {
+    if (!socket) {
         addWishToWall({ name: name, message: message }, true);
         updateWishCount();
     }
