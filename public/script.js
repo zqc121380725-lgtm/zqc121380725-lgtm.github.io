@@ -592,9 +592,10 @@ function beginGalleryDrag(e) {
 
 function moveGalleryDrag(e) {
     if (!galleryDrag.active || e.pointerId !== galleryDrag.pointerId) return;
-    e.preventDefault();
     galleryDrag.deltaX = e.clientX - galleryDrag.startX;
     galleryDrag.deltaY = e.clientY - galleryDrag.startY;
+    if (Math.abs(galleryDrag.deltaY) > Math.abs(galleryDrag.deltaX)) return;
+    e.preventDefault();
     var distance = Math.hypot(galleryDrag.deltaX, galleryDrag.deltaY);
     var resistance = distance > 180 ? 0.58 : 0.82;
     var scale = 1 - Math.min(distance / 2600, 0.055);
@@ -612,6 +613,10 @@ function endGalleryDrag(e) {
     galleryDrag.active = false;
     galleryDrag.pointerId = null;
     img.classList.remove('is-dragging');
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+        resetGalleryImagePosition(img);
+        return;
+    }
     if (distance < 55 && velocity < 0.45) {
         resetGalleryImagePosition(img);
         return;
@@ -717,7 +722,7 @@ function openMap() {
 function openNavigation(provider) {
     var destination = '甘肃省兰州市兰州新区丝路华廷禧宴';
     var links = {
-        didi: 'https://v.didi.cn/',
+        didi: 'https://a.app.qq.com/o/simple.jsp?pkgname=com.sdu.didi.psnger&g_f=992316',
         amap: 'https://uri.amap.com/search?keyword=' + encodeURIComponent(destination) + '&view=map&callnative=1',
         baidu: 'https://api.map.baidu.com/geocoder?address=' + encodeURIComponent(destination) + '&output=html&src=zt20261003.love'
     };

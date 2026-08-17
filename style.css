@@ -4516,7 +4516,7 @@ body {
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    touch-action: none;
+    touch-action: pan-y pinch-zoom;
     cursor: grab;
     will-change: transform, opacity;
     user-select: none;
@@ -4544,7 +4544,7 @@ body {
     transform: none !important;
     margin: 0;
     cursor: grab;
-    touch-action: none;
+    touch-action: pan-y pinch-zoom;
 }
 .gallery-grid .gallery-item.is-dragging { cursor: grabbing; }
 .gallery-grid .gallery-item.large { width: 100%; }
