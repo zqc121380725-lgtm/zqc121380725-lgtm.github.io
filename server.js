@@ -94,6 +94,7 @@ app.get('/theme/old-money.css', (req, res) => res.sendFile(path.join(__dirname, 
 app.use('/music', express.static(path.join(__dirname, 'music')));
 app.get('/admin', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'admin.html')));
 app.get('/health', (req, res) => res.json({ ok: true, service: 'wedding-invitation-live' }));
+app.get('/api/init', (req, res) => res.json({ wishes: data.wishes.slice(-INITIAL_WISH_LIMIT), totalWishes: data.totalWishes, treeWishes: data.treeWishes.slice(-INITIAL_WISH_LIMIT) }));
 
 io.on('connection', socket => {
     data.totalVisitors += 1;
