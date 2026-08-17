@@ -7,7 +7,7 @@
     <meta name="description" content="2026年10月3日中午，诚邀您来见证我们的海边婚礼。">
     <link rel="stylesheet" href="style.css?v=20260817-performance-1">
     <link rel="stylesheet" href="opening-art.css?v=20260817-performance-1">
-    <link rel="stylesheet" href="old-money.css?v=20260817-old-money-3">
+    <link rel="stylesheet" href="old-money.css?v=20260817-old-money-4">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Ma+Shan+Zheng&family=Playfair+Display:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         // 设备检测
@@ -195,7 +195,7 @@
 
             <section class="invitation-text">
                 <div class="text-decoration animate-scroll">✦</div>
-                <p class="main-text animate-scroll">佳期已定，邀您同庆</p>
+                <p class="main-text animate-scroll"><span>佳期已定</span><span>邀您同庆</span></p>
                 <p class="sub-text animate-scroll">我们诚挚地邀请您<br>见证这份幸福与喜悦</p>
                 <div class="quote-box animate-scroll">
                     <p>"执子之手，与子偕老"</p>
@@ -205,7 +205,7 @@
 
             <section class="story-section">
                 <div class="section-eyebrow animate-scroll">THE STORY SO FAR</div>
-                <h2 class="section-title animate-scroll">我们的电影，从这里开始</h2>
+                <h2 class="section-title animate-scroll"><span>我们的电影</span><span>从这里开始</span></h2>
                 <p class="story-lead animate-scroll">从第一次见面时的怦然心动，到海边婚纱照里并肩看潮汐，我们把平凡的日子过成了只属于彼此的浪漫。</p>
                 <div class="film-timeline">
                     <article class="film-card animate-scroll"><span class="film-number">01</span><strong>初见</strong><p>那天的风很轻，刚好把你带到我身边。</p></article>
@@ -228,7 +228,7 @@
                         <svg viewBox="0 0 48 48" aria-hidden="true"><path class="icon-soft-fill" d="M13 29.5h22V40H13Z"/><path class="icon-main-line" d="M12 39.5h24M15 39V25.5M33 39V25.5M11 25.5h26L24 14 11 25.5Z"/><path class="icon-main-line" d="M19.5 39V30h9v9M20.5 18.2c0-2 1.6-3.7 3.5-3.7s3.5 1.7 3.5 3.7"/><path class="icon-accent-line" d="M17 11.5c2.2-3 5.2-4.5 7-4.5s4.8 1.5 7 4.5M9 42h30"/></svg>
                     </div>
                     <h3>婚宴地点</h3>
-                    <p class="info-time">甘肃省兰州市兰州新区丝路华廷禧宴</p>
+                    <p class="info-time venue-address"><span>甘肃省兰州市兰州新区</span><strong>丝路华廷禧宴</strong></p>
                     <p class="info-detail">点击查看详情</p>
                 </div>
                 <div class="info-card animate-scroll countdown-card" id="countdownCard">
@@ -352,6 +352,21 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="navigationModal">
+        <div class="modal navigation-modal"><button class="modal-close" onclick="closeModal('navigationModal')">&times;</button>
+            <div class="modal-content">
+                <div class="navigation-kicker">CHOOSE YOUR ROUTE</div>
+                <h2>选择导航方式</h2>
+                <p class="navigation-destination">甘肃省兰州市兰州新区<br><strong>丝路华廷禧宴</strong></p>
+                <div class="navigation-options">
+                    <button class="navigation-option navigation-didi" onclick="openNavigation('didi')"><span class="navigation-mark">滴</span><span><strong>滴滴打车</strong><small>呼叫车辆前往婚宴</small></span></button>
+                    <button class="navigation-option navigation-amap" onclick="openNavigation('amap')"><span class="navigation-mark">高</span><span><strong>高德地图</strong><small>驾车、公交与步行导航</small></span></button>
+                    <button class="navigation-option navigation-baidu" onclick="openNavigation('baidu')"><span class="navigation-mark">百</span><span><strong>百度地图</strong><small>搜索地点并规划路线</small></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="rsvpModal">
         <div class="modal rsvp-modal"><div class="modal-content"><div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
         <h2 id="rsvpTitle">感谢您的回复</h2><p id="rsvpMessage">我们已收到您的回复</p><button class="btn btn-close" onclick="closeModal('rsvpModal')">确定</button></div></div>
@@ -374,6 +389,6 @@
 
     <script src="/live-config.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js?v=20260817-old-money-3"></script>
+    <script src="script.js?v=20260817-old-money-4"></script>
 </body>
 </html>

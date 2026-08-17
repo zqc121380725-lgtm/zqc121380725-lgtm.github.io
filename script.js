@@ -710,7 +710,18 @@ function toggleMusic() {
 
 // ========== 地图导航 ==========
 function openMap() {
-    window.open('https://uri.amap.com/search?keyword=' + encodeURIComponent('甘肃省兰州市兰州新区丝路华廷禧宴') + '&view=map&callnative=1', '_blank', 'noopener');
+    closeModal('venueModal');
+    openModal('navigationModal');
+}
+
+function openNavigation(provider) {
+    var destination = '甘肃省兰州市兰州新区丝路华廷禧宴';
+    var links = {
+        didi: 'https://v.didi.cn/',
+        amap: 'https://uri.amap.com/search?keyword=' + encodeURIComponent(destination) + '&view=map&callnative=1',
+        baidu: 'https://api.map.baidu.com/geocoder?address=' + encodeURIComponent(destination) + '&output=html&src=zt20261003.love'
+    };
+    if (links[provider]) window.open(links[provider], '_blank', 'noopener');
 }
 
 // ========== 回到顶部 ==========
