@@ -610,7 +610,7 @@
     </div>
 
     <script src="/live-config.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" crossorigin="anonymous"></script>
     <script>
         const socket = io(window.LIVE_API_URL || undefined);
         const emptyData = () => ({ rsvp: [], wishes: [], treeWishes: [], visitors: [], foodPrefs: [], seatSelections: [], gameScores: [] });
