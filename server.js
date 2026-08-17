@@ -40,6 +40,21 @@ function loadData() {
 let data = loadData();
 
 function saveData() {
+    // 防护：不允许保存完全空的数据（防止意外清空）
+    const hasData = data.wishes.length > 0 || data.rsvp.length > 0 || 
+                    data.treeWishes.length > 0 || data.gameScores.length > 0;
+    
+    // 若无任何数据且文件已存在，创建备份后再保存
+    if (!hasData && fs.existsSync(DATA_FILE)) {
+        const stat = fs.statSync(DATA_FILE);
+        if (stat.size > 100) {  // 原文件有内容
+            const backupFile = `${DATA_FILE}.backup-${Date.now()}.json`;
+            fs.copyFileSync(DATA_FILE, backupFile);
+            console.log(`⚠️ 数据为空，已创建备份: ${backupFile}`);
+            return;  // 不覆盖原文件
+        }
+    }
+    
     const temporaryFile = `${DATA_FILE}.tmp`;
     fs.writeFileSync(temporaryFile, JSON.stringify(data, null, 2), 'utf8');
     fs.renameSync(temporaryFile, DATA_FILE);
