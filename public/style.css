@@ -3016,6 +3016,37 @@ body {
     background: var(--gradient-accent);
 }
 
+.modal-gallery-item {
+    appearance: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: left;
+}
+
+.modal-gallery-item .placeholder-img {
+    background-color: #dbe5df;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.modal-gallery-item .placeholder-img span {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    padding: 5px 7px;
+    background: rgba(16, 47, 58, .78);
+    color: #fff8e8;
+    font-size: 11px;
+    line-height: 1.35;
+    text-align: left;
+}
+
+.modal-gallery-item .placeholder-img[data-photo] {
+    background-image: var(--modal-photo);
+
 /* 弹窗通用 */
 .modal-overlay {
     position: fixed;

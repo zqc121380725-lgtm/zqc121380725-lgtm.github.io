@@ -3016,6 +3016,37 @@ body {
     background: var(--gradient-accent);
 }
 
+.modal-gallery-item {
+    appearance: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: left;
+}
+
+.modal-gallery-item .placeholder-img {
+    background-color: #dbe5df;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.modal-gallery-item .placeholder-img span {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    padding: 5px 7px;
+    background: rgba(16, 47, 58, .78);
+    color: #fff8e8;
+    font-size: 11px;
+    line-height: 1.35;
+    text-align: left;
+}
+
+.modal-gallery-item .placeholder-img[data-photo] {
+    background-image: var(--modal-photo);
+
 /* 弹窗通用 */
 .modal-overlay {
     position: fixed;
@@ -6619,39 +6650,6 @@ body:has(.envelope-animation:not(.opened)) .petals-container {
         #102f3a !important;
 }
 
-.gallery-section .gallery-grid .gallery-item.frame-cinema::after {
-    content: '' !important;
-    position: absolute !important;
-    z-index: 7 !important;
-    inset: 9px !important;
-    border: 2px solid rgba(240, 217, 184, .72) !important;
-    clip-path: polygon(0 8%, 8% 0, 92% 0, 100% 8%, 100% 92%, 92% 100%, 8% 100%, 0 92%) !important;
-    pointer-events: none !important;
-}
-
-@media (max-width: 899px) {
-    .gallery-section .gallery-grid .gallery-item::before {
-        padding: 13px !important;
-    }
-
-    .gallery-section .gallery-grid .gallery-item.frame-polaroid::before {
-        padding: 14px !important;
-    }
-
-    .gallery-section .gallery-grid .gallery-item.frame-slide::before {
-        padding: 12px !important;
-    }
-
-    .gallery-section .gallery-grid .gallery-item.frame-cinema::before {
-        padding: 14px !important;
-    }
-}
-
-/* Keep the main featured photograph free of overlaid names. */
-.featured-photo .placeholder-img.featured > span {
-    display: none !important;
-}
-
 /* Keep portrait photos and their quiet type area as separate regions. */
 .gallery-section .gallery-grid .gallery-item.portrait {
     aspect-ratio: 1.2 / 1 !important;
@@ -6715,4 +6713,37 @@ body:has(.envelope-animation:not(.opened)) .petals-container {
     .gallery-section .gallery-grid .gallery-item.portrait .gallery-caption-space .gallery-caption {
         font-size: clamp(15px, 4vw, 19px) !important;
     }
+}
+
+.gallery-section .gallery-grid .gallery-item.frame-cinema::after {
+    content: '' !important;
+    position: absolute !important;
+    z-index: 7 !important;
+    inset: 9px !important;
+    border: 2px solid rgba(240, 217, 184, .72) !important;
+    clip-path: polygon(0 8%, 8% 0, 92% 0, 100% 8%, 100% 92%, 92% 100%, 8% 100%, 0 92%) !important;
+    pointer-events: none !important;
+}
+
+@media (max-width: 899px) {
+    .gallery-section .gallery-grid .gallery-item::before {
+        padding: 13px !important;
+    }
+
+    .gallery-section .gallery-grid .gallery-item.frame-polaroid::before {
+        padding: 14px !important;
+    }
+
+    .gallery-section .gallery-grid .gallery-item.frame-slide::before {
+        padding: 12px !important;
+    }
+
+    .gallery-section .gallery-grid .gallery-item.frame-cinema::before {
+        padding: 14px !important;
+    }
+}
+
+/* Keep the main featured photograph free of overlaid names. */
+.featured-photo .placeholder-img.featured > span {
+    display: none !important;
 }

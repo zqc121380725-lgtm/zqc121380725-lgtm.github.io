@@ -148,9 +148,30 @@ function initScrollAnimations() {
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
+        if (modalId === 'galleryModal') renderGalleryHighlights();
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
+}
+
+function renderGalleryHighlights() {
+    var grid = document.getElementById('galleryHighlights');
+    if (!grid || !galleryImages || !galleryImages.length) return;
+
+    var indexes = galleryImages.map(function(_, index) { return index; });
+    for (var index = indexes.length - 1; index > 0; index -= 1) {
+        var swapIndex = Math.floor(Math.random() * (index + 1));
+        var current = indexes[index];
+        indexes[index] = indexes[swapIndex];
+        indexes[swapIndex] = current;
+    }
+
+    grid.innerHTML = indexes.slice(0, 6).map(function(imageIndex) {
+        var image = galleryImages[imageIndex];
+        return '<button class="modal-gallery-item" type="button" data-gallery-index="' + imageIndex + '" aria-label="查看' + image.caption + '">' +
+            '<div class="placeholder-img" data-photo="' + image.src + '" style="background-image:url(\'' + image.src + '\')"><span>' + image.caption + '</span></div>' +
+            '</button>';
+    }).join('');
 }
 
 function closeModal(modalId) {
@@ -182,6 +203,19 @@ function initInfoCards() {
         overlay.addEventListener('click', function(e) {
             if (e.target === overlay) closeModal(overlay.id);
         });
+    });
+
+    var highlights = document.getElementById('galleryHighlights');
+    if (highlights) highlights.addEventListener('click', function(e) {
+        var item = e.target.closest('.modal-gallery-item[data-gallery-index]');
+        if (!item) return;
+        currentImageIndex = parseInt(item.dataset.galleryIndex, 10) || 0;
+            closeModal('galleryModal');
+            window.setTimeout(function() {
+                updateLightbox();
+                document.getElementById('lightbox').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }, 320);
     });
 }
 
