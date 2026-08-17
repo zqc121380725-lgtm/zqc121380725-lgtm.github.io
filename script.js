@@ -455,7 +455,7 @@ function showSuccessModal(emoji, title, message) {
 // ========== 相册灯箱 ==========
 var currentImageIndex = 0;
 var galleryImages = [
-    { src: 'photos-optimized/1786895775746.webp', caption: '潮声为我们作序' },
+    { src: 'photos-optimized/1786895775746.webp', caption: '赵锦江 · 滕玥' },
     { src: 'photos-optimized/1786901043598.webp', caption: '风把心事吹向你' },
     { src: 'photos-optimized/1786901043653.webp', caption: '把寻常日子拍成诗' },
     { src: 'photos-optimized/1786901043709.webp', caption: '靠近你，也靠近晴朗' },

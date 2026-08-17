@@ -71,6 +71,7 @@ const io = new Server(server, {
 });
 
 app.use(express.static(PUBLIC_DIR));
+app.get('/theme/old-money.css', (req, res) => res.sendFile(path.join(__dirname, 'old-money.css')));
 app.get('/admin', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'admin.html')));
 app.get('/health', (req, res) => res.json({ ok: true, service: 'wedding-invitation-live' }));
 

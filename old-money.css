@@ -1,0 +1,917 @@
+/* Modern heritage theme: restrained, architectural, and photo-led. */
+:root {
+    --heritage-ink: #17221c;
+    --heritage-forest: #24382d;
+    --heritage-wine: #5a2429;
+    --heritage-brass: #a7894f;
+    --heritage-champagne: #d7c49a;
+    --heritage-ivory: #f1ede4;
+    --heritage-paper: #f8f5ee;
+    --heritage-stone: #d8d2c6;
+    --heritage-muted: #6f716b;
+    --color-text: var(--heritage-ink);
+    --color-text-light: var(--heritage-muted);
+    --color-gold: var(--heritage-brass);
+    --color-rose: var(--heritage-wine);
+    --color-lavender: var(--heritage-forest);
+    --color-border: rgba(70, 64, 52, .2);
+    --gradient-primary: linear-gradient(135deg, #f8f5ee, #e5dfd2);
+    --gradient-accent: linear-gradient(135deg, #24382d, #17221c);
+    --gradient-card: linear-gradient(145deg, rgba(248,245,238,.98), rgba(232,226,214,.98));
+    --gradient-button: linear-gradient(135deg, #24382d, #17221c);
+    --shadow-soft: 0 12px 34px rgba(25, 32, 27, .08);
+    --shadow-medium: 0 22px 60px rgba(25, 32, 27, .14);
+    --shadow-glow: none;
+    --shadow-glow-strong: none;
+    --radius-sm: 2px;
+    --radius-md: 3px;
+    --radius-lg: 4px;
+    --radius-xl: 4px;
+}
+
+html {
+    background: var(--heritage-ink);
+}
+
+body {
+    color: var(--heritage-ink) !important;
+    background:
+        linear-gradient(rgba(23,34,28,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23,34,28,.035) 1px, transparent 1px),
+        var(--heritage-ivory) !important;
+    background-size: 48px 48px !important;
+    font-family: 'Noto Serif SC', 'Songti SC', 'STSong', serif !important;
+    letter-spacing: 0 !important;
+}
+
+.invitation-container {
+    max-width: 1440px !important;
+    margin: 0 auto !important;
+    background: var(--heritage-paper) !important;
+    box-shadow: 0 0 0 1px rgba(215,196,154,.2), 0 0 80px rgba(0,0,0,.24) !important;
+}
+
+.petals-container,
+.glow,
+.floating-decor,
+.opening-sun,
+.beach-sketch,
+.sparkles,
+.text-decoration,
+.wall-sun-doodle,
+.wall-tape,
+.heart-float {
+    display: none !important;
+}
+
+.glow-bg {
+    opacity: .6 !important;
+    background: radial-gradient(circle at 50% 0, rgba(167,137,79,.08), transparent 38%) !important;
+}
+
+.film-dust {
+    opacity: .11 !important;
+}
+
+/* Opening: a formal private-view invitation, not a playful envelope. */
+.envelope-animation {
+    background:
+        linear-gradient(90deg, rgba(215,196,154,.06) 1px, transparent 1px),
+        linear-gradient(rgba(215,196,154,.06) 1px, transparent 1px),
+        var(--heritage-ink) !important;
+    background-size: 72px 72px !important;
+}
+
+.envelope-animation::before {
+    content: 'THE WEDDING OF' !important;
+    position: absolute !important;
+    top: clamp(44px, 9vh, 96px) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    color: var(--heritage-champagne) !important;
+    font: 500 12px/1 'Cormorant Garamond', serif !important;
+    letter-spacing: 5px !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+    inset-block-end: auto !important;
+}
+
+.opening-caption {
+    top: auto !important;
+    bottom: clamp(45px, 9vh, 92px) !important;
+    color: rgba(241,237,228,.62) !important;
+    letter-spacing: 3px !important;
+}
+
+.opening-caption strong {
+    color: var(--heritage-champagne) !important;
+    font-weight: 500 !important;
+}
+
+.envelope-wrapper {
+    width: min(82vw, 480px) !important;
+}
+
+.envelope {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1.58 / 1 !important;
+    animation: heritageInviteFloat 5s ease-in-out infinite !important;
+}
+
+@keyframes heritageInviteFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+}
+
+.envelope-body {
+    background:
+        linear-gradient(135deg, transparent 49.8%, rgba(36,56,45,.08) 50%, transparent 50.2%),
+        var(--heritage-paper) !important;
+    border: 1px solid var(--heritage-brass) !important;
+    border-radius: 1px !important;
+    box-shadow: 0 34px 90px rgba(0,0,0,.42) !important;
+}
+
+.envelope-body::after {
+    inset: 14px !important;
+    border: 1px solid rgba(167,137,79,.55) !important;
+    border-radius: 0 !important;
+}
+
+.envelope-flap {
+    opacity: .12 !important;
+}
+
+.ticket-copy {
+    color: var(--heritage-ink) !important;
+}
+
+.ticket-copy small,
+.ticket-copy span {
+    color: var(--heritage-wine) !important;
+    letter-spacing: 2px !important;
+}
+
+.ticket-copy strong {
+    font-family: 'Cormorant Garamond', serif !important;
+    font-weight: 500 !important;
+    letter-spacing: 4px !important;
+}
+
+.wax-seal {
+    background: var(--heritage-wine) !important;
+    color: var(--heritage-champagne) !important;
+    border: 1px solid rgba(215,196,154,.65) !important;
+    box-shadow: 0 8px 20px rgba(41,10,13,.28) !important;
+}
+
+.envelope-letter {
+    background: var(--heritage-forest) !important;
+    border: 1px solid var(--heritage-brass) !important;
+    border-radius: 0 !important;
+}
+
+.letter-content,
+.envelope-hint {
+    color: var(--heritage-champagne) !important;
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important;
+    letter-spacing: 3px !important;
+}
+
+/* Full-bleed editorial cover. */
+.hero-section {
+    min-height: min(92vh, 900px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-end !important;
+    padding: clamp(90px, 12vw, 150px) clamp(26px, 8vw, 120px) clamp(70px, 10vw, 120px) !important;
+    text-align: left !important;
+    color: var(--heritage-paper) !important;
+    background:
+        linear-gradient(90deg, rgba(12,20,16,.88) 0%, rgba(12,20,16,.52) 47%, rgba(12,20,16,.12) 75%),
+        linear-gradient(0deg, rgba(12,20,16,.72), transparent 48%),
+        url('/photos-optimized/1786895775746.webp') right center / auto 100% no-repeat,
+        var(--heritage-ink) !important;
+    border: 0 !important;
+    overflow: hidden !important;
+}
+
+.hero-section::before {
+    content: '' !important;
+    position: absolute !important;
+    inset: 22px !important;
+    border: 1px solid rgba(215,196,154,.5) !important;
+    pointer-events: none !important;
+    background: none !important;
+    mix-blend-mode: normal !important;
+    z-index: 1 !important;
+}
+
+.hero-section > * {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.hero-section > .hero-film-meta {
+    position: absolute !important;
+}
+
+.hero-film-meta {
+    top: 42px !important;
+    left: clamp(42px, 8vw, 120px) !important;
+    right: clamp(42px, 8vw, 120px) !important;
+    color: var(--heritage-champagne) !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    letter-spacing: 3px !important;
+}
+
+.decorative-top {
+    display: none !important;
+}
+
+.hero-section .subtitle {
+    margin: 0 0 14px !important;
+    color: var(--heritage-champagne) !important;
+    font: 500 13px/1.2 'Cormorant Garamond', serif !important;
+    letter-spacing: 5px !important;
+    text-transform: uppercase !important;
+}
+
+.couple-names {
+    margin: 0 !important;
+    max-width: 880px !important;
+}
+
+.couple-names .name {
+    display: block !important;
+    color: var(--heritage-paper) !important;
+    background: none !important;
+    -webkit-text-fill-color: currentColor !important;
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important;
+    font-size: clamp(52px, 9vw, 118px) !important;
+    font-weight: 400 !important;
+    line-height: .98 !important;
+    letter-spacing: 0 !important;
+    text-shadow: 0 4px 30px rgba(0,0,0,.28) !important;
+}
+
+.hero-kicker {
+    max-width: 560px !important;
+    margin: 24px 0 28px !important;
+    color: rgba(248,245,238,.78) !important;
+    font-size: clamp(15px, 1.6vw, 19px) !important;
+    letter-spacing: 2px !important;
+}
+
+.date-badge {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.date-inner {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 18px !important;
+    color: var(--heritage-paper) !important;
+}
+
+.date-inner .year {
+    color: var(--heritage-champagne) !important;
+    font: 400 clamp(30px, 4vw, 48px)/1 'Cormorant Garamond', serif !important;
+    letter-spacing: 2px !important;
+}
+
+.date-inner .divider {
+    width: 70px !important;
+    height: 1px !important;
+    background: var(--heritage-brass) !important;
+}
+
+.date-inner .month-day {
+    color: var(--heritage-paper) !important;
+    font-size: 14px !important;
+    letter-spacing: 3px !important;
+}
+
+.hero-location {
+    margin: 20px 0 0 !important;
+    color: rgba(248,245,238,.64) !important;
+    font-size: 11px !important;
+    letter-spacing: 4px !important;
+}
+
+.location-line {
+    background: var(--heritage-brass) !important;
+}
+
+.scroll-cue {
+    left: auto !important;
+    right: clamp(42px, 8vw, 120px) !important;
+    bottom: 42px !important;
+    color: rgba(248,245,238,.62) !important;
+    letter-spacing: 2px !important;
+}
+
+/* Architectural sections and type hierarchy. */
+.invitation-text,
+.story-section,
+.info-section,
+.interactive-section,
+.blessing-wall-section,
+.gallery-section,
+.rsvp-section,
+.footer {
+    position: relative !important;
+    border-radius: 0 !important;
+}
+
+.invitation-text {
+    padding: clamp(90px, 11vw, 150px) clamp(26px, 10vw, 150px) !important;
+    background: var(--heritage-paper) !important;
+    border-bottom: 1px solid var(--heritage-stone) !important;
+}
+
+.invitation-text::before {
+    content: 'PRIVATE INVITATION' !important;
+    display: block !important;
+    margin-bottom: 34px !important;
+    color: var(--heritage-wine) !important;
+    font: 600 11px/1 'Cormorant Garamond', serif !important;
+    letter-spacing: 5px !important;
+}
+
+.main-text,
+.section-title,
+.rsvp-card h2 {
+    color: var(--heritage-ink) !important;
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+}
+
+.invitation-text .main-text {
+    font-size: clamp(38px, 6vw, 72px) !important;
+    line-height: 1.15 !important;
+}
+
+.sub-text,
+.story-lead {
+    color: var(--heritage-muted) !important;
+    letter-spacing: 1px !important;
+}
+
+.quote-box {
+    max-width: 700px !important;
+    margin: 46px auto 0 !important;
+    padding: 28px 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-top: 1px solid var(--heritage-brass) !important;
+    border-bottom: 1px solid var(--heritage-brass) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.quote-box p {
+    color: var(--heritage-forest) !important;
+}
+
+.story-section {
+    padding: clamp(90px, 10vw, 140px) clamp(26px, 8vw, 110px) !important;
+    background: var(--heritage-forest) !important;
+    color: var(--heritage-paper) !important;
+}
+
+.section-eyebrow {
+    color: var(--heritage-champagne) !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    letter-spacing: 5px !important;
+}
+
+.story-section .section-title,
+.story-section .story-lead {
+    color: var(--heritage-paper) !important;
+}
+
+.section-title {
+    font-size: clamp(36px, 5vw, 64px) !important;
+    line-height: 1.15 !important;
+}
+
+.film-timeline {
+    gap: 0 !important;
+    margin-top: 64px !important;
+    border-top: 1px solid rgba(215,196,154,.45) !important;
+    border-bottom: 1px solid rgba(215,196,154,.45) !important;
+}
+
+.film-card {
+    min-height: 230px !important;
+    padding: 38px !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-right: 1px solid rgba(215,196,154,.32) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.film-card:last-child {
+    border-right: 0 !important;
+}
+
+.film-card strong {
+    color: var(--heritage-paper) !important;
+    font: 500 28px/1.2 'Cormorant Garamond', 'Noto Serif SC', serif !important;
+}
+
+.film-card p {
+    color: rgba(248,245,238,.64) !important;
+}
+
+.film-number {
+    color: var(--heritage-champagne) !important;
+    font: 400 14px/1 'Cormorant Garamond', serif !important;
+}
+
+.info-section {
+    gap: 1px !important;
+    padding: 1px !important;
+    background: var(--heritage-brass) !important;
+}
+
+.info-card,
+.interactive-card {
+    background: var(--heritage-paper) !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.info-card {
+    min-height: 270px !important;
+    padding: 42px 28px !important;
+}
+
+.info-card:hover,
+.interactive-card:hover {
+    transform: none !important;
+    background: #e9e2d5 !important;
+    box-shadow: inset 0 0 0 1px var(--heritage-brass) !important;
+}
+
+.card-icon {
+    color: var(--heritage-brass) !important;
+}
+
+.icon-main-line,
+.icon-accent-line {
+    stroke: var(--heritage-forest) !important;
+}
+
+.icon-soft-fill {
+    fill: rgba(167,137,79,.12) !important;
+}
+
+.info-card h3,
+.interactive-card h4 {
+    color: var(--heritage-ink) !important;
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important;
+    letter-spacing: 1px !important;
+}
+
+.info-time,
+.info-detail {
+    color: var(--heritage-muted) !important;
+}
+
+.countdown-number {
+    color: var(--heritage-wine) !important;
+}
+
+.featured-photo-section {
+    padding: clamp(50px, 7vw, 90px) !important;
+    background: #d8d2c6 !important;
+}
+
+.featured-photo {
+    border-radius: 0 !important;
+    box-shadow: 0 28px 70px rgba(23,34,28,.18) !important;
+    border: 12px solid var(--heritage-paper) !important;
+}
+
+.poster-meta {
+    background: var(--heritage-ink) !important;
+    color: var(--heritage-champagne) !important;
+}
+
+.photo-overlay {
+    background: linear-gradient(transparent, rgba(10,18,14,.72)) !important;
+}
+
+.interactive-section,
+.blessing-wall-section,
+.gallery-section,
+.rsvp-section {
+    padding: clamp(82px, 9vw, 130px) clamp(22px, 7vw, 100px) !important;
+}
+
+.interactive-section {
+    background: var(--heritage-paper) !important;
+}
+
+.interactive-cards {
+    grid-template-columns: minmax(0, 760px) !important;
+    justify-content: center !important;
+    gap: 1px !important;
+    margin-top: 48px !important;
+    background: var(--heritage-brass) !important;
+    border: 1px solid var(--heritage-brass) !important;
+}
+
+.interactive-card {
+    padding: 48px 30px !important;
+}
+
+.card-emoji {
+    filter: grayscale(1) sepia(.4) !important;
+}
+
+.blessing-wall-section {
+    background: #e0dbd0 !important;
+}
+
+.wall-script {
+    color: var(--heritage-wine) !important;
+    font-family: 'Cormorant Garamond', serif !important;
+    letter-spacing: 3px !important;
+}
+
+.blessing-wall,
+.wish-input-box,
+.rsvp-card {
+    background: var(--heritage-paper) !important;
+    border: 1px solid rgba(167,137,79,.5) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 20px 55px rgba(23,34,28,.1) !important;
+}
+
+.wish-input-box,
+.rsvp-card {
+    padding: clamp(28px, 5vw, 58px) !important;
+}
+
+input,
+textarea,
+select,
+.rsvp-input,
+.wish-textarea {
+    color: var(--heritage-ink) !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(36,56,45,.42) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--heritage-brass) !important;
+    outline: 0 !important;
+}
+
+.gallery-section {
+    background: var(--heritage-ink) !important;
+}
+
+.gallery-section .section-title,
+.gallery-section .gallery-note {
+    color: var(--heritage-paper) !important;
+}
+
+.gallery-section .gallery-note {
+    opacity: .58 !important;
+    letter-spacing: 2px !important;
+}
+
+.gallery-section .gallery-grid {
+    gap: clamp(18px, 3vw, 38px) !important;
+    padding: 44px 0 20px !important;
+}
+
+.gallery-section .gallery-grid .gallery-item,
+.gallery-section .gallery-grid .gallery-item.frame-polaroid,
+.gallery-section .gallery-grid .gallery-item.frame-slide,
+.gallery-section .gallery-grid .gallery-item.frame-cinema {
+    border: 1px solid rgba(215,196,154,.65) !important;
+    background: #101713 !important;
+    box-shadow: 12px 14px 0 rgba(167,137,79,.16), 0 18px 38px rgba(0,0,0,.26) !important;
+    clip-path: none !important;
+}
+
+.gallery-section .gallery-grid .gallery-item::before {
+    display: block !important;
+    inset: 8px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 1px solid rgba(215,196,154,.28) !important;
+    clip-path: none !important;
+    -webkit-mask: none !important;
+    mask: none !important;
+    filter: none !important;
+}
+
+.gallery-section .gallery-grid .gallery-item.frame-polaroid::before,
+.gallery-section .gallery-grid .gallery-item.frame-slide::before,
+.gallery-section .gallery-grid .gallery-item.frame-cinema::before {
+    inset: 8px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 1px solid rgba(215,196,154,.28) !important;
+    border-radius: 0 !important;
+    clip-path: none !important;
+    -webkit-mask: none !important;
+    mask: none !important;
+    filter: none !important;
+}
+
+.gallery-section .gallery-grid .gallery-item::after {
+    display: none !important;
+}
+
+.gallery-section .gallery-item .placeholder-img {
+    box-shadow: none !important;
+}
+
+.gallery-section .gallery-grid .gallery-item.portrait .gallery-caption-space {
+    background: #e6e0d5 !important;
+    border-left: 1px solid var(--heritage-brass) !important;
+}
+
+.gallery-section .gallery-grid .gallery-item.portrait .gallery-caption-space .gallery-caption,
+.gallery-section .gallery-item:nth-child(2) > .gallery-caption {
+    color: var(--heritage-forest) !important;
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important;
+    font-style: italic !important;
+    font-weight: 500 !important;
+    letter-spacing: 1px !important;
+    text-shadow: none !important;
+}
+
+.gallery-progress {
+    background: rgba(215,196,154,.18) !important;
+}
+
+.gallery-progress-bar {
+    background: var(--heritage-brass) !important;
+}
+
+.rsvp-section {
+    background: var(--heritage-paper) !important;
+}
+
+.rsvp-card h2 {
+    font-size: clamp(38px, 5vw, 62px) !important;
+}
+
+.rsvp-card::before,
+.rsvp-card::after {
+    pointer-events: none !important;
+}
+
+.rsvp-card > * {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.rsvp-fields,
+.rsvp-buttons,
+.rsvp-fields input,
+.rsvp-fields select,
+.rsvp-buttons button {
+    pointer-events: auto !important;
+}
+
+.btn,
+.btn-accept,
+.btn-decline,
+.btn-blessing,
+.btn-send,
+.btn-close,
+.gallery-modal-dismiss {
+    min-height: 48px !important;
+    color: var(--heritage-paper) !important;
+    background: var(--heritage-forest) !important;
+    border: 1px solid var(--heritage-forest) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important;
+    letter-spacing: 2px !important;
+}
+
+.btn:hover,
+.gallery-modal-dismiss:hover {
+    color: var(--heritage-ink) !important;
+    background: var(--heritage-champagne) !important;
+    border-color: var(--heritage-brass) !important;
+    transform: none !important;
+}
+
+.btn-decline {
+    color: var(--heritage-wine) !important;
+    background: transparent !important;
+    border-color: var(--heritage-wine) !important;
+}
+
+.footer {
+    padding: 90px 24px !important;
+    color: var(--heritage-paper) !important;
+    background: #111a15 !important;
+    border-top: 1px solid var(--heritage-brass) !important;
+}
+
+.footer-text,
+.footer-names,
+.footer-date,
+.footer-bottom {
+    color: var(--heritage-paper) !important;
+}
+
+.footer-names {
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important;
+    font-size: clamp(32px, 5vw, 52px) !important;
+    font-weight: 400 !important;
+}
+
+/* Dialogs use the same private-club visual language. */
+.modal-overlay,
+.lightbox-overlay {
+    background: rgba(10,16,13,.86) !important;
+    backdrop-filter: blur(12px) !important;
+}
+
+.modal,
+.gallery-modal,
+.game-modal,
+.rsvp-modal {
+    color: var(--heritage-ink) !important;
+    background: var(--heritage-paper) !important;
+    border: 1px solid var(--heritage-brass) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 35px 100px rgba(0,0,0,.42) !important;
+}
+
+.modal::before {
+    content: '' !important;
+    position: absolute !important;
+    inset: 10px !important;
+    border: 1px solid rgba(167,137,79,.28) !important;
+    pointer-events: none !important;
+}
+
+.modal h2,
+.modal-content h2 {
+    color: var(--heritage-ink) !important;
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important;
+    letter-spacing: 1px !important;
+}
+
+.modal-close,
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next,
+.music-toggle,
+.back-to-top {
+    color: var(--heritage-champagne) !important;
+    background: var(--heritage-ink) !important;
+    border: 1px solid var(--heritage-brass) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.modal-gallery-item {
+    border: 1px solid var(--heritage-brass) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.lightbox-content {
+    border: 1px solid rgba(215,196,154,.55) !important;
+    background: #0c120f !important;
+}
+
+.lightbox-caption,
+.lightbox-counter {
+    color: var(--heritage-champagne) !important;
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important;
+}
+
+@media (max-width: 899px) {
+    .hero-section {
+        min-height: 88vh !important;
+        padding: 96px 34px 76px !important;
+        background-position: center center !important;
+        background-size: auto 100% !important;
+    }
+
+    .hero-section::before {
+        inset: 14px !important;
+    }
+
+    .hero-film-meta {
+        top: 30px !important;
+        left: 30px !important;
+        right: 30px !important;
+    }
+
+    .couple-names .name {
+        font-size: clamp(39px, 11.2vw, 46px) !important;
+        line-height: 1.08 !important;
+        white-space: nowrap !important;
+    }
+
+    .hero-kicker {
+        margin-top: 18px !important;
+        font-size: 14px !important;
+        line-height: 1.8 !important;
+    }
+
+    .date-inner {
+        gap: 12px !important;
+        flex-wrap: wrap !important;
+    }
+
+    .date-inner .divider {
+        width: 36px !important;
+    }
+
+    .scroll-cue {
+        display: none !important;
+    }
+
+    .film-timeline {
+        display: block !important;
+    }
+
+    .film-card {
+        min-height: 0 !important;
+        border-right: 0 !important;
+        border-bottom: 1px solid rgba(215,196,154,.32) !important;
+    }
+
+    .film-card:last-child {
+        border-bottom: 0 !important;
+    }
+
+    .info-section {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .info-card {
+        min-height: 225px !important;
+        padding: 30px 16px !important;
+    }
+
+    .featured-photo-section {
+        padding: 28px 18px !important;
+    }
+
+    .featured-photo {
+        border-width: 7px !important;
+    }
+
+    .interactive-section,
+    .blessing-wall-section,
+    .gallery-section,
+    .rsvp-section {
+        padding: 72px 18px !important;
+    }
+
+    .gallery-section .gallery-grid {
+        gap: 20px !important;
+        padding-top: 32px !important;
+    }
+
+    .gallery-section .gallery-grid .gallery-item,
+    .gallery-section .gallery-grid .gallery-item.frame-polaroid,
+    .gallery-section .gallery-grid .gallery-item.frame-slide,
+    .gallery-section .gallery-grid .gallery-item.frame-cinema {
+        box-shadow: 7px 8px 0 rgba(167,137,79,.18), 0 14px 28px rgba(0,0,0,.24) !important;
+    }
+
+    .modal {
+        width: calc(100% - 28px) !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .envelope {
+        animation: none !important;
+    }
+}
