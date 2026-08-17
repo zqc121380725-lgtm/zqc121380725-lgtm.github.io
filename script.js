@@ -1,6 +1,8 @@
 // Socket.IO 连接（可选，不影响基本功能）
 let socket = null;
 let isConnected = false;
+var wallWishTotal = 0;
+var maxVisibleWallWishes = 24;
 
 try {
     socket = io(window.LIVE_API_URL || undefined);
@@ -12,11 +14,16 @@ try {
         isConnected = false;
     });
     socket.on('initData', (data) => {
+        wallWishTotal = Number(data.totalWishes) || (data.wishes ? data.wishes.length : 0);
         if (data.wishes) data.wishes.forEach(wish => addWishToWall(wish, false));
         if (data.treeWishes) data.treeWishes.forEach(wish => addWishToTree(wish, false));
         updateWishCount();
     });
-    socket.on('newWish', (wish) => { addWishToWall(wish, true); updateWishCount(); });
+    socket.on('newWish', (wish) => {
+        wallWishTotal += 1;
+        addWishToWall(wish, true);
+        updateWishCount();
+    });
     socket.on('newTreeWish', (wish) => { addWishToTree(wish, true); });
     socket.on('seatTaken', (data) => {
         alert(`座位 ${data.seat} 已被其他人选择，请选择其他座位`);
@@ -300,6 +307,7 @@ function sendWallWish() {
 
     socketEmit('wish', { name: name, message: message });
     if (!socket) {
+        wallWishTotal += 1;
         addWishToWall({ name: name, message: message }, true);
         updateWishCount();
     }
@@ -340,8 +348,6 @@ function addWishToWall(wish, isNew) {
     var styles = ['style-1', 'style-2', 'style-3'];
     var item = document.createElement('div');
     item.className = 'blessing-item ' + styles[Math.floor(Math.random() * styles.length)];
-    item.style.top = (10 + Math.random() * 70) + '%';
-    item.style.left = (5 + Math.random() * 60) + '%';
 
     var authorSpan = document.createElement('span');
     authorSpan.className = 'wish-author-small';
@@ -349,14 +355,16 @@ function addWishToWall(wish, isNew) {
     item.appendChild(authorSpan);
     item.appendChild(document.createTextNode(wish.message || ''));
 
-    if (isNew) item.style.animation = 'wishAppear 0.6s ease';
+    if (isNew) item.classList.add('is-new');
     wall.appendChild(item);
+    while (wall.children.length > maxVisibleWallWishes) {
+        wall.removeChild(wall.firstElementChild);
+    }
 }
 
 function updateWishCount() {
-    var count = document.querySelectorAll('.blessing-item').length;
     var el = document.getElementById('wishCount');
-    if (el) el.textContent = count;
+    if (el) el.textContent = wallWishTotal;
 }
 
 // ========== 座位选择 ==========
@@ -750,6 +758,18 @@ function initMusic() {
     audio.addEventListener('pause', syncMusicButton);
     audio.addEventListener('ended', syncMusicButton);
     syncMusicButton();
+    playBackgroundMusic();
+
+    function retryAutoplay() {
+        playBackgroundMusic();
+        document.removeEventListener('pointerdown', retryAutoplay);
+        document.removeEventListener('touchstart', retryAutoplay);
+        document.removeEventListener('keydown', retryAutoplay);
+    }
+
+    document.addEventListener('pointerdown', retryAutoplay, { once: true, passive: true });
+    document.addEventListener('touchstart', retryAutoplay, { once: true, passive: true });
+    document.addEventListener('keydown', retryAutoplay, { once: true });
 }
 
 // ========== 地图导航 ==========

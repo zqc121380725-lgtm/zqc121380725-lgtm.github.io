@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>海风作证 · 我们结婚啦</title>
     <meta name="description" content="2026年10月3日中午，诚邀您来见证我们的海边婚礼。">
-    <link rel="stylesheet" href="style.css?v=20260817-performance-1">
+    <link rel="stylesheet" href="style.css?v=20260817-performance-2">
     <link rel="stylesheet" href="opening-art.css?v=20260817-performance-1">
     <link rel="stylesheet" href="/theme/old-money.css?v=20260817-old-money-5">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Ma+Shan+Zheng&family=Playfair+Display:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -315,8 +315,8 @@
                 <div class="blessing-wall" id="blessingWall"></div>
                 <div class="wish-input-box letter-paper animate-scroll">
                     <div class="letter-paper-heading" aria-hidden="true"><span>TO THE NEWLYWEDS</span><span>2026.10.03</span></div>
-                    <input type="text" placeholder="您的名字" class="rsvp-input" id="wallName">
-                    <textarea placeholder="写下您的祝福..." class="wish-textarea" id="wallMessage"></textarea>
+                    <input type="text" placeholder="您的名字" class="rsvp-input" id="wallName" maxlength="30">
+                    <textarea placeholder="写下您的祝福..." class="wish-textarea" id="wallMessage" maxlength="200"></textarea>
                     <button class="btn btn-blessing" onclick="sendWallWish()">封缄并送出</button>
                 </div>
             </section>
@@ -383,12 +383,12 @@
         <div class="lightbox-content"><div class="lightbox-img" id="lightboxImg" role="img" aria-live="polite"></div><p class="lightbox-caption" id="lightboxCaption"></p><div class="lightbox-counter" id="lightboxCounter">1 / 7</div></div>
     </div>
 
-    <audio id="backgroundMusic" src="music/until-i-found-you.mp3" preload="none" loop></audio>
+    <audio id="backgroundMusic" src="music/until-i-found-you.mp3" preload="auto" autoplay loop></audio>
     <button class="music-toggle" id="musicToggle" type="button" onclick="toggleMusic()" aria-label="播放背景音乐" title="播放背景音乐"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="music-icon"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></button>
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="18 15 12 9 6 15"/></svg></button>
 
     <script src="/live-config.js"></script>
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" crossorigin="anonymous"></script>
-    <script src="script.js?v=20260817-old-money-12"></script>
+    <script src="script.js?v=20260817-old-money-14"></script>
 </body>
 </html>

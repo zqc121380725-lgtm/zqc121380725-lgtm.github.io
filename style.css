@@ -5732,7 +5732,7 @@ body.gallery-turning .tide-lines {
 .wall-script { position: absolute; top: 118px; right: 9%; color: #c47d59; font: 19px 'Ma Shan Zheng', cursive; transform: rotate(-8deg); opacity: .78; }
 .live-counter { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; background: rgba(250,247,239,.75); border: 1px dashed rgba(23,60,74,.25); border-radius: 2px; color: #587273; font-family: var(--font-display); letter-spacing: 1px; }
 .live-counter strong { color: #c47d59; font-family: var(--font-display); font-size: 18px; }
-.blessing-wall { min-height: 290px; height: auto; margin: 28px 0 26px; border: 0; border-radius: 2px; background: #f3ead6; box-shadow: 9px 10px 0 rgba(213,139,102,.25), inset 0 0 40px rgba(168,125,79,.11); isolation: isolate; }
+.blessing-wall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: start; gap: 12px; min-height: 290px; max-height: 430px; height: auto; margin: 28px 0 26px; padding: 26px 22px 42px; border: 0; border-radius: 2px; background: #f3ead6; box-shadow: 9px 10px 0 rgba(213,139,102,.25), inset 0 0 40px rgba(168,125,79,.11); isolation: isolate; overflow-y: auto; }
 .blessing-wall::before { content: ''; position: absolute; inset: 0; opacity: .33; background-image: linear-gradient(rgba(117,94,64,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(117,94,64,.05) 1px, transparent 1px); background-size: 100% 29px, 29px 100%; pointer-events: none; }
 .blessing-wall::after { content: 'GOOD WORDS / FROM OUR PEOPLE'; position: absolute; left: 20px; bottom: 15px; color: rgba(23,60,74,.45); font: 9px var(--font-display); letter-spacing: 3px; }
 .wall-tape { position: absolute; top: -11px; width: 76px; height: 25px; background: rgba(225,174,119,.58); box-shadow: 0 2px 4px rgba(50,60,50,.08); z-index: 3; }
@@ -5740,11 +5740,16 @@ body.gallery-turning .tide-lines {
 .wall-tape-right { right: 14%; transform: rotate(8deg); }
 .wall-sun-doodle { position: absolute; top: 15px; right: 20px; color: #d58b66; font-size: 24px; animation: doodlePulse 3s ease-in-out infinite; }
 @keyframes doodlePulse { 50% { transform: rotate(25deg) scale(1.15); } }
-.blessing-item { z-index: 2; max-width: 68%; padding: 12px 16px 11px; border-radius: 1px; background: #fff8e9 !important; color: #174858 !important; box-shadow: 3px 5px 0 rgba(23,60,74,.12); font-family: var(--font-body); line-height: 1.55; transform: rotate(-3deg); }
+.blessing-item { position: relative; z-index: 2; top: auto; left: auto; max-width: none; min-width: 0; padding: 12px 16px 11px; border-radius: 1px; background: #fff8e9 !important; color: #174858 !important; box-shadow: 3px 5px 0 rgba(23,60,74,.12); font-family: var(--font-body); line-height: 1.55; overflow-wrap: anywhere; animation: none; transform: rotate(-1deg); }
+.blessing-item.is-new { animation: wishAppear .6s ease both; }
 .blessing-item:nth-child(4n) { transform: rotate(4deg); background: #f7dfbf !important; }
 .blessing-item:nth-child(4n+1) { transform: rotate(-5deg); background: #d9ebe5 !important; }
 .blessing-item:nth-child(4n+2) { transform: rotate(2deg); }
 .wish-author-small { display: block; margin-bottom: 2px; color: #c47d59; font: 12px 'Ma Shan Zheng', cursive; }
+@media (max-width: 640px) {
+    .blessing-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; max-height: 390px; padding: 22px 14px 40px; }
+    .blessing-item { padding: 10px 11px; font-size: 12px; }
+}
 .wish-input-box { position: relative; display: grid; grid-template-columns: 1fr 1.5fr auto; gap: 10px; align-items: stretch; }
 .wish-input-box::before { content: 'WRITE A NOTE'; position: absolute; left: 10px; top: -18px; color: #c47d59; font: 10px var(--font-display); letter-spacing: 2px; }
 .wish-input-box .rsvp-input, .wish-input-box .wish-textarea { margin: 0; border: 0; border-bottom: 1px solid rgba(23,60,74,.35); border-radius: 0; background: rgba(255,250,240,.55); color: #174858; }
