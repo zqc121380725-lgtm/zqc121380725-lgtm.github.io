@@ -12,7 +12,7 @@
     <link rel="preload" as="image" href="gallery-thumbs/1786901044033.webp">
     <link rel="preload" as="image" href="gallery-thumbs/1786901044052.webp">
     <link rel="preload" as="image" href="gallery-thumbs/1786901044128.webp">
-    <link rel="stylesheet" href="style.css?v=20260817-performance-3">
+    <link rel="stylesheet" href="style.css?v=20260817-rsvp-contact-1">
     <link rel="stylesheet" href="opening-art.css?v=20260817-performance-1">
     <link rel="stylesheet" href="old-money.css?v=20260817-old-money-5">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Ma+Shan+Zheng&family=Playfair+Display:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -296,15 +296,11 @@
                 <div class="rsvp-card animate-scroll">
                     <h2>出席回复</h2>
                     <p>请告诉我们您是否能够出席</p>
-                    <div class="rsvp-fields">
-                        <input type="text" id="guestName" placeholder="您的姓名">
-                        <input type="number" id="guestCount" aria-label="出席人数" placeholder="出席人数" min="1" max="99" step="1" inputmode="numeric" value="1">
-                    </div>
                     <div class="rsvp-buttons">
-                        <button class="btn btn-accept" onclick="handleRSVP('accept')">
+                        <button class="btn btn-accept" onclick="openRsvpForm('accept')">
                             <span class="btn-icon">✓</span> 欣然出席
                         </button>
-                        <button class="btn btn-decline" onclick="handleRSVP('decline')">
+                        <button class="btn btn-decline" onclick="openRsvpForm('decline')">
                             <span class="btn-icon">✗</span> 遗憾缺席
                         </button>
                     </div>
@@ -378,6 +374,29 @@
         <h2 id="rsvpTitle">感谢您的回复</h2><p id="rsvpMessage">我们已收到您的回复</p><button class="btn btn-close" onclick="closeModal('rsvpModal')">确定</button></div></div>
     </div>
 
+    <div class="modal-overlay" id="rsvpFormModal">
+        <div class="modal rsvp-form-modal">
+            <button class="modal-close" type="button" onclick="closeModal('rsvpFormModal')" aria-label="关闭">&times;</button>
+            <div class="modal-content">
+                <div class="rsvp-form-kicker">ATTENDANCE REPLY</div>
+                <h2 id="rsvpFormTitle">填写出席信息</h2>
+                <p id="rsvpFormHint">请留下您的姓名和联系方式</p>
+                <form class="rsvp-form" onsubmit="submitRsvpForm(event)">
+                    <label for="guestName">姓名 <span>必填</span></label>
+                    <input type="text" id="guestName" name="guestName" placeholder="请输入您的姓名" maxlength="30" autocomplete="name" required>
+                    <label for="guestContact">联系方式 <span>必填</span></label>
+                    <input type="text" id="guestContact" name="guestContact" placeholder="手机号码或微信号" maxlength="50" autocomplete="tel" required>
+                    <div id="guestCountField">
+                        <label for="guestCount">出席人数</label>
+                        <input type="number" id="guestCount" name="guestCount" aria-label="出席人数" min="1" max="99" step="1" inputmode="numeric" value="1">
+                    </div>
+                    <p class="rsvp-form-error" id="rsvpFormError" role="alert" aria-live="polite"></p>
+                    <button class="btn rsvp-submit" id="rsvpSubmitButton" type="submit">确认回复</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="successModal">
         <div class="modal rsvp-modal"><div class="modal-content"><div class="success-icon"><span style="font-size:50px" id="successEmoji">✅</span></div>
         <h2 id="successTitle">操作成功</h2><p id="successMessage">感谢您的参与</p><button class="btn btn-close" onclick="closeModal('successModal')">确定</button></div></div>
@@ -396,6 +415,6 @@
 
     <script src="/live-config.js"></script>
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" crossorigin="anonymous"></script>
-    <script src="script.js?v=20260817-direct-navigation-1"></script>
+    <script src="script.js?v=20260817-rsvp-contact-1"></script>
 </body>
 </html>

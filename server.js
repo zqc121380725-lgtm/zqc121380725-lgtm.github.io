@@ -123,7 +123,16 @@ io.on('connection', socket => {
         });
     };
 
-    addRecord('rsvp', 'rsvp', 'newRsvp');
+    socket.on('rsvp', payload => {
+        const name = String(payload?.name || '').trim().slice(0, 30);
+        const contact = String(payload?.contact || '').trim().slice(0, 50);
+        const status = payload?.status === 'decline' ? 'decline' : 'accept';
+        const count = status === 'accept' ? Math.min(Math.max(Number(payload?.count) || 1, 1), 99) : 1;
+        if (!name || !contact) return;
+        const item = record('rsvp', { name, contact, status, count }, socket);
+        io.emit('newRsvp', item);
+        io.emit('stats', stats());
+    });
     socket.on('wish', payload => {
         const now = Date.now();
         if (now - (socket.data.lastWishAt || 0) < 2000) return;

@@ -3883,6 +3883,45 @@ body {
 .rsvp-card h2 { color: #174858; }
 .rsvp-fields { display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px; margin: 20px 0; }
 .rsvp-fields input, .rsvp-fields select { min-height: 44px; padding: 10px 12px; border: 1px solid rgba(23,60,74,.2); border-radius: 2px; background: #fffaf0; color: #174858; font: inherit; }
+
+.rsvp-form-modal {
+    width: min(92vw, 460px);
+    max-height: min(88vh, 720px);
+    overflow-y: auto;
+    border: 1px solid rgba(215,183,123,.7);
+    border-radius: 3px;
+    background: #fffaf0;
+    box-shadow: 12px 12px 0 rgba(213,139,102,.32), 0 24px 70px rgba(16,47,58,.3);
+}
+.rsvp-form-modal .modal-content { padding: 42px 34px 34px; text-align: left; }
+.rsvp-form-modal .modal-content h2 { margin: 4px 0 8px; color: #174858; font-family: 'Noto Serif SC', serif; font-size: 28px; letter-spacing: 0; }
+.rsvp-form-modal .modal-content > p { margin-bottom: 22px; color: #65767a; font-size: 13px; }
+.rsvp-form-kicker { color: #b17859; font-family: 'Cormorant Garamond', serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; }
+.rsvp-form { display: grid; gap: 9px; }
+.rsvp-form label { margin-top: 5px; color: #174858; font-size: 13px; font-weight: 600; }
+.rsvp-form label span { margin-left: 5px; color: #b17859; font-size: 10px; font-weight: 500; }
+.rsvp-form input {
+    width: 100%;
+    min-height: 48px;
+    padding: 11px 13px;
+    color: #102f3a;
+    background: #fffdf7;
+    border: 1px solid rgba(23,72,88,.24);
+    border-radius: 2px;
+    font: 14px 'Noto Serif SC', serif;
+    outline: none;
+}
+.rsvp-form input:focus { border-color: #d58b66; box-shadow: 0 0 0 3px rgba(213,139,102,.12); }
+.rsvp-form input::placeholder { color: #8b999b; }
+.rsvp-form-error { min-height: 20px; margin: 2px 0 0 !important; color: #9f4c40 !important; font-size: 12px !important; }
+.rsvp-submit { width: 100%; min-height: 48px; margin-top: 3px; color: #fffaf0; background: #174858; border-radius: 2px; }
+.rsvp-submit:hover { background: #102f3a; transform: translateY(-1px); }
+
+@media (max-width: 560px) {
+    .rsvp-form-modal { width: calc(100vw - 28px); max-height: calc(100vh - 28px); }
+    .rsvp-form-modal .modal-content { padding: 38px 20px 24px; }
+    .rsvp-form-modal .modal-content h2 { font-size: 24px; }
+}
 .btn { border-radius: 2px; background: #174858; box-shadow: 4px 4px 0 #d58b66; }
 .btn:hover { transform: translateY(-3px); box-shadow: 6px 7px 0 #d58b66; }
 .footer { background: #102f3a; color: #e8c697; }

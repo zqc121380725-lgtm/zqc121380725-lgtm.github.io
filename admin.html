@@ -709,7 +709,8 @@
                     </div>
                     <div class="item-content">
                         <span class="status-${r.status}">${r.status === 'accept' ? '✅ 确认出席' : '❌ 遗憾缺席'}</span>
-                        ${r.count ? `<span style="margin-left:10px;color:#888">人数: ${r.count}</span>` : ''}
+                        ${r.status === 'accept' && r.count ? `<span style="margin-left:10px;color:#888">人数: ${r.count}</span>` : ''}
+                        <span class="data-chip">联系方式 ${escapeHtml(r.contact || '未填写')}</span>
                     </div>
                     <div class="item-actions">
                         ${!r.read ? `<button class="btn-small btn-read" onclick="markRead('rsvp','${r.id}')">标为已读</button>` : ''}
@@ -889,7 +890,7 @@
             };
             const rows = [['类型', '姓名', '内容', '状态', '时间']];
             allData.rsvp.forEach(r => {
-                rows.push(['RSVP', r.name, `${r.count || 1}人`, r.status === 'accept' ? '出席' : '缺席', formatTime(r.timestamp)]);
+                rows.push(['RSVP', r.name, `${r.count || 1}人；联系方式：${r.contact || '未填写'}`, r.status === 'accept' ? '出席' : '缺席', formatTime(r.timestamp)]);
             });
             allData.wishes.forEach(w => {
                 rows.push(['祝福墙', w.name, w.message, w.read ? '已读' : '未读', formatTime(w.timestamp)]);

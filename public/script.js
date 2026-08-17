@@ -236,24 +236,57 @@ function initInfoCards() {
 }
 
 // ========== RSVP处理 ==========
-function handleRSVP(status) {
+var pendingRsvpStatus = 'accept';
+
+function openRsvpForm(status) {
+    pendingRsvpStatus = status === 'decline' ? 'decline' : 'accept';
+    var isAttending = pendingRsvpStatus === 'accept';
+    document.getElementById('rsvpFormTitle').textContent = isAttending ? '欣然出席' : '遗憾缺席';
+    document.getElementById('rsvpFormHint').textContent = isAttending ? '请留下您的姓名、联系方式和出席人数' : '请留下您的姓名和联系方式';
+    document.getElementById('guestCountField').hidden = !isAttending;
+    document.getElementById('rsvpSubmitButton').textContent = isAttending ? '确认出席' : '确认缺席';
+    document.getElementById('rsvpFormError').textContent = '';
+    openModal('rsvpFormModal');
+    window.setTimeout(function() { document.getElementById('guestName').focus(); }, 320);
+}
+
+function submitRsvpForm(event) {
+    event.preventDefault();
     var name = document.getElementById('guestName');
+    var contact = document.getElementById('guestContact');
     var count = document.getElementById('guestCount');
-    var guestName = name ? name.value || '宾客' : '宾客';
-    var guestCount = count ? parseInt(count.value, 10) : 1;
+    var error = document.getElementById('rsvpFormError');
+    var guestName = name ? name.value.trim() : '';
+    var guestContact = contact ? contact.value.trim() : '';
+    var guestCount = pendingRsvpStatus === 'accept' && count ? parseInt(count.value, 10) : 1;
+
+    if (!guestName) {
+        error.textContent = '请填写您的姓名';
+        name.focus();
+        return;
+    }
+    if (!guestContact) {
+        error.textContent = '请填写手机号码或微信号';
+        contact.focus();
+        return;
+    }
 
     if (!Number.isInteger(guestCount) || guestCount < 1 || guestCount > 99) {
-        alert('请输入 1 至 99 之间的出席人数');
+        error.textContent = '请输入 1 至 99 之间的出席人数';
         if (count) count.focus();
         return;
     }
 
-    socketEmit('rsvp', { name: guestName, status: status, count: guestCount });
+    socketEmit('rsvp', { name: guestName, contact: guestContact, status: pendingRsvpStatus, count: guestCount });
+    closeModal('rsvpFormModal');
+    name.value = '';
+    contact.value = '';
+    if (count) count.value = '1';
 
     var title = document.getElementById('rsvpTitle');
     var msg = document.getElementById('rsvpMessage');
-    if (title) title.textContent = status === 'accept' ? '感谢您的出席' : '收到您的回复';
-    if (msg) msg.textContent = status === 'accept' ? guestName + '，期待与您相见' : guestName + '，虽然遗憾但我们理解';
+    if (title) title.textContent = pendingRsvpStatus === 'accept' ? '感谢您的出席' : '收到您的回复';
+    if (msg) msg.textContent = pendingRsvpStatus === 'accept' ? guestName + '，期待与您相见' : guestName + '，虽然遗憾但我们理解';
     openModal('rsvpModal');
 }
 
