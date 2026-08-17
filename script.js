@@ -92,7 +92,6 @@ function initEnvelope() {
             envelope.style.display = 'none';
             resetPageScroll();
             mainContent.classList.add('visible');
-            loadGalleryImages();
             document.documentElement.style.overflow = '';
             document.body.style.overflow = '';
             initScrollAnimations();
@@ -541,7 +540,10 @@ var galleryDrag = {
 
 function initGallery() {
     var gallery = document.querySelector('.gallery-grid');
-    if (gallery) initInlineGallery(gallery);
+    if (gallery) {
+        initInlineGallery(gallery);
+        loadGalleryImages(gallery);
+    }
 
     var lightbox = document.getElementById('lightbox');
     if (lightbox) {
@@ -571,12 +573,6 @@ function initInlineGallery(gallery) {
         item.setAttribute('role', 'listitem');
         item.setAttribute('tabindex', '0');
         item.setAttribute('aria-label', '放大查看：' + image.caption);
-        if (inlineImage) {
-            inlineImage.addEventListener('error', function retryImage() {
-                inlineImage.removeEventListener('error', retryImage);
-                inlineImage.src = image.src + '?retry=' + Date.now();
-            });
-        }
         item.addEventListener('click', function() {
             currentImageIndex = imageIndex;
             updateLightbox();
@@ -591,13 +587,48 @@ function initInlineGallery(gallery) {
     });
 }
 
-function loadGalleryImages() {
-    document.querySelectorAll('.gallery-grid img[data-src]').forEach(loadInlineGalleryImage);
+function loadGalleryImages(gallery) {
+    var galleryElement = gallery || document.querySelector('.gallery-grid');
+    if (!galleryElement || galleryElement.dataset.loading === 'true') return;
+    galleryElement.dataset.loading = 'true';
+    var images = Array.prototype.slice.call(galleryElement.querySelectorAll('img[data-src]'));
+    Promise.all(images.map(loadInlineGalleryImage)).then(function() {
+        galleryElement.classList.add('gallery-images-ready');
+    });
 }
 
 function loadInlineGalleryImage(inlineImage) {
-    if (!inlineImage || inlineImage.src || !inlineImage.dataset.src) return;
-    inlineImage.src = inlineImage.dataset.src;
+    if (!inlineImage || !inlineImage.dataset.src) return Promise.resolve();
+    if (inlineImage.complete && inlineImage.naturalWidth > 0) return Promise.resolve();
+
+    return new Promise(function(resolve) {
+        var source = inlineImage.dataset.src;
+        var retried = false;
+
+        function finish() {
+            inlineImage.removeEventListener('load', handleLoad);
+            inlineImage.removeEventListener('error', handleError);
+            var decoded = inlineImage.decode ? inlineImage.decode().catch(function() {}) : Promise.resolve();
+            decoded.then(resolve);
+        }
+
+        function handleLoad() {
+            finish();
+        }
+
+        function handleError() {
+            if (!retried) {
+                retried = true;
+                inlineImage.src = source + '?retry=' + Date.now();
+                return;
+            }
+            finish();
+        }
+
+        inlineImage.addEventListener('load', handleLoad);
+        inlineImage.addEventListener('error', handleError);
+        inlineImage.src = source;
+    });
 }
 
 function beginGalleryDrag(e) {

@@ -4289,7 +4289,15 @@ body {
     position: relative;
     z-index: 1;
     filter: saturate(.82) contrast(1.03);
+    background: linear-gradient(110deg, #dce7e2 25%, #f5eddd 42%, #dce7e2 58%);
+    background-size: 220% 100%;
+    animation: galleryLoading 1.5s linear infinite;
 }
+
+.gallery-grid .gallery-item img { opacity: 0; }
+.gallery-grid.gallery-images-ready .gallery-item .placeholder-img { animation: none; background: #e7efeb; }
+.gallery-grid.gallery-images-ready .gallery-item img { opacity: 1; transition: opacity .35s ease; }
+@keyframes galleryLoading { to { background-position: -220% 0; } }
 
 .gallery-item .placeholder-img::before {
     content: '';
