@@ -1,2 +1,1 @@
-// Leave empty when the invitation and live server share one origin.
-window.LIVE_API_URL = '';
+window.LIVE_API_URL = 'https://wedding-invitation-live.onrender.com';
