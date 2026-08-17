@@ -4,35 +4,51 @@ let isConnected = false;
 var wallWishTotal = 0;
 var maxVisibleWallWishes = 24;
 
-try {
-    socket = io(window.LIVE_API_URL || undefined);
-    socket.on('connect', () => {
-        console.log('已连接到服务器');
-        isConnected = true;
-    });
-    socket.on('disconnect', () => {
-        isConnected = false;
-    });
-    socket.on('initData', (data) => {
-        wallWishTotal = Number(data.totalWishes) || (data.wishes ? data.wishes.length : 0);
-        if (data.wishes) data.wishes.forEach(wish => addWishToWall(wish, false));
-        if (data.treeWishes) data.treeWishes.forEach(wish => addWishToTree(wish, false));
-        updateWishCount();
-    });
-    socket.on('newWish', (wish) => {
-        wallWishTotal += 1;
-        addWishToWall(wish, true);
-        updateWishCount();
-    });
-    socket.on('newTreeWish', (wish) => { addWishToTree(wish, true); });
-    socket.on('seatTaken', (data) => {
-        alert(`座位 ${data.seat} 已被其他人选择，请选择其他座位`);
-        const seatEl = document.querySelector(`[data-seat="${data.seat}"]`);
-        if (seatEl) { seatEl.classList.add('taken'); seatEl.classList.remove('selected'); }
-    });
-} catch (e) {
-    console.log('Socket.IO 未连接，离线模式运行');
+async function initializeWishes() {
+    try {
+        socket = io(window.LIVE_API_URL || undefined);
+        socket.on('connect', () => {
+            console.log('已连接到服务器');
+            isConnected = true;
+        });
+        socket.on('disconnect', () => {
+            isConnected = false;
+        });
+        socket.on('initData', (data) => {
+            wallWishTotal = Number(data.totalWishes) || (data.wishes ? data.wishes.length : 0);
+            if (data.wishes) data.wishes.forEach(wish => addWishToWall(wish, false));
+            if (data.treeWishes) data.treeWishes.forEach(wish => addWishToTree(wish, false));
+            updateWishCount();
+        });
+        socket.on('newWish', (wish) => {
+            wallWishTotal += 1;
+            addWishToWall(wish, true);
+            updateWishCount();
+        });
+        socket.on('newTreeWish', (wish) => { addWishToTree(wish, true); });
+        socket.on('seatTaken', (data) => {
+            alert(`座位 ${data.seat} 已被其他人选择，请选择其他座位`);
+            const seatEl = document.querySelector(`[data-seat="${data.seat}"]`);
+            if (seatEl) { seatEl.classList.add('taken'); seatEl.classList.remove('selected'); }
+        });
+    } catch (e) {
+        console.log('Socket.IO 连接失败，尝试 HTTP 方式加载数据');
+        try {
+            const response = await fetch('/api/init');
+            if (response.ok) {
+                const data = await response.json();
+                wallWishTotal = Number(data.totalWishes) || (data.wishes ? data.wishes.length : 0);
+                if (data.wishes) data.wishes.forEach(wish => addWishToWall(wish, false));
+                if (data.treeWishes) data.treeWishes.forEach(wish => addWishToTree(wish, false));
+                updateWishCount();
+            }
+        } catch (fallbackError) {
+            console.log('离线模式运行，祝福墙暂不可用');
+        }
+    }
 }
+
+initializeWishes();
 
 // 安全发送Socket消息
 function socketEmit(event, data) {
