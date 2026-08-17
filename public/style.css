@@ -5202,6 +5202,65 @@ body:has(.envelope-animation:not(.opened)) .petals-container {
     }
 }
 
+/* Final modal controls stay reachable even when the gallery content scrolls. */
+#galleryModal {
+    transition: none !important;
+}
+
+#galleryModal.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+#galleryModal .gallery-modal {
+    position: relative;
+    padding-top: 52px;
+}
+
+#galleryModal .modal-close {
+    position: fixed !important;
+    z-index: 2100;
+    top: max(16px, env(safe-area-inset-top));
+    right: max(16px, env(safe-area-inset-right));
+    margin: 0;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    background: #174858;
+    border: 1px solid rgba(255, 255, 255, .7);
+    color: #fff8e8;
+    box-shadow: 0 5px 16px rgba(16, 47, 58, .25);
+}
+
+.gallery-modal-dismiss {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 18px;
+    border: 0;
+    border-radius: 4px;
+    background: #174858;
+    color: #fff8e8;
+    font: 600 15px var(--font-body);
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+@media (max-width: 560px) {
+    #galleryModal {
+        align-items: flex-end;
+        padding: 12px;
+    }
+
+    #galleryModal .gallery-modal {
+        width: 100%;
+        max-height: calc(100dvh - 24px);
+        margin: 0;
+        padding: 50px 18px 20px;
+        border-radius: 12px 12px 4px 4px;
+    }
+}
+
 /* Art captions stay inside the large frames and never create external whitespace. */
 .gallery-grid .gallery-item:nth-child(2) > .gallery-caption,
 .gallery-grid .gallery-item:nth-child(4) > .gallery-caption,

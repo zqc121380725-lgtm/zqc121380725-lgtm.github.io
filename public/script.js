@@ -148,6 +148,12 @@ function initScrollAnimations() {
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
+        if (modal._closeTimer) {
+            window.clearTimeout(modal._closeTimer);
+            modal._closeTimer = null;
+        }
+        const modalContent = modal.querySelector('.modal');
+        if (modalContent) modalContent.style.transform = '';
         if (modalId === 'galleryModal') renderGalleryHighlights();
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -178,12 +184,11 @@ function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         const mc = modal.querySelector('.modal');
-        if (mc) mc.style.transform = 'scale(0.9) translateY(30px)';
-        setTimeout(function() {
-            modal.classList.remove('active');
-            if (mc) mc.style.transform = '';
-            document.body.style.overflow = '';
-        }, 300);
+        if (modal._closeTimer) window.clearTimeout(modal._closeTimer);
+        modal._closeTimer = null;
+        modal.classList.remove('active');
+        if (mc) mc.style.transform = '';
+        document.body.style.overflow = '';
     }
 }
 
