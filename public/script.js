@@ -300,7 +300,32 @@ function sendWallWish() {
     }
     if (msgEl) msgEl.value = '';
 
-    showSuccessModal('💝', '祝福已送出', '感谢您的美好祝福');
+    playLetterSendAnimation();
+    window.setTimeout(function() {
+        showSuccessModal('💝', '祝福已送出', '感谢您的美好祝福');
+    }, 900);
+}
+
+function playLetterSendAnimation() {
+    var paper = document.querySelector('.letter-paper');
+    if (!paper) return;
+
+    var rect = paper.getBoundingClientRect();
+    var letter = document.createElement('div');
+    letter.className = 'outgoing-letter';
+    letter.style.left = (rect.left + rect.width / 2) + 'px';
+    letter.style.top = (rect.top + rect.height / 2) + 'px';
+    letter.innerHTML = '<span class="outgoing-letter-flap"></span><strong>Z & T</strong>';
+    document.body.appendChild(letter);
+    paper.classList.add('is-sending');
+
+    window.requestAnimationFrame(function() {
+        letter.classList.add('is-flying');
+    });
+    window.setTimeout(function() {
+        letter.remove();
+        paper.classList.remove('is-sending');
+    }, 1100);
 }
 
 function addWishToWall(wish, isNew) {
@@ -456,24 +481,12 @@ function showSuccessModal(emoji, title, message) {
 var currentImageIndex = 0;
 var galleryImages = [
     { src: 'photos-optimized/1786895775746.webp', caption: '赵锦江 · 滕玥' },
-    { src: 'photos-optimized/1786901043598.webp', caption: '风把心事吹向你' },
-    { src: 'photos-optimized/1786901043653.webp', caption: '把寻常日子拍成诗' },
-    { src: 'photos-optimized/1786901043709.webp', caption: '靠近你，也靠近晴朗' },
-    { src: 'photos-optimized/1786901043714.webp', caption: '一束柔光落在肩头' },
-    { src: 'photos-optimized/1786901043721.webp', caption: '从此望向同一片海' },
-    { src: 'photos-optimized/1786901043757.webp', caption: '赵锦江 · 滕玥' },
-    { src: 'photos-optimized/1786901043794.webp', caption: '此刻的风，恰好温柔' },
     { src: 'photos-optimized/1786901043816.webp', caption: '这一页，写满心动' },
     { src: 'photos-optimized/1786901043859.webp', caption: '爱在眉眼，也在余生' },
-    { src: 'photos-optimized/1786901043907.webp', caption: '故事还会驶向远方' },
-    { src: 'photos-optimized/1786901043949.webp', caption: '让海风替我们作证' },
-    { src: 'photos-optimized/1786901043990.webp', caption: '沿着星光，牵手去远方' },
+    { src: 'photos-optimized/last-wedding-photo.webp', caption: '余生的镜头，只拍你' },
     { src: 'photos-optimized/1786901044033.webp', caption: '肩并肩，看潮汐起落' },
     { src: 'photos-optimized/1786901044052.webp', caption: '把远方写进我们的誓言' },
-    { src: 'photos-optimized/1786901044093.webp', caption: '下一幕，仍与你同场' },
-    { src: 'photos-optimized/1786901044128.webp', caption: '海岸线收好我们的秘密' },
-    { src: 'photos-optimized/1786901044142.webp', caption: '回眸时，晚风正好' },
-    { src: 'photos-optimized/last-wedding-photo.webp', caption: '余生的镜头，只拍你' }
+    { src: 'photos-optimized/1786901044128.webp', caption: '海岸线收好我们的秘密' }
 ];
 var totalImages = galleryImages.length;
 var galleryImageCache = {};
@@ -539,115 +552,18 @@ function initGallery() {
 
 function initInlineGallery(gallery) {
     var items = Array.prototype.slice.call(gallery.querySelectorAll('.gallery-item'));
-    var used = {};
-    var queues = items.map(function(item) {
-        var index = parseInt(item.dataset.index, 10) - 1;
-        used[index] = true;
-        return [index];
-    });
-    galleryImages.forEach(function(image, index) {
-        if (!used[index]) queues[index % items.length].push(index);
-    });
-
-    items.forEach(function(item, itemIndex) {
+    items.forEach(function(item) {
+        var imageIndex = parseInt(item.dataset.index, 10) - 1;
+        var image = galleryImages[imageIndex];
         var imageBox = item.querySelector('.placeholder-img');
-        var nextBox = document.createElement('div');
-        nextBox.className = 'placeholder-img gallery-next-page';
-        nextBox.setAttribute('aria-hidden', 'true');
-        var photoShell = document.createElement('div');
-        photoShell.className = 'gallery-photo-shell';
-        imageBox.parentNode.insertBefore(photoShell, imageBox);
-        photoShell.appendChild(imageBox);
-        photoShell.appendChild(nextBox);
-        var captionBox = document.createElement('span');
-        captionBox.className = 'gallery-caption';
-        captionBox.setAttribute('aria-live', 'polite');
-        var captionSpace = document.createElement('div');
-        captionSpace.className = 'gallery-caption-space';
-        captionSpace.appendChild(captionBox);
-        item.appendChild(captionSpace);
-        var state = { index: 0, startX: 0, startY: 0, deltaX: 0, deltaY: 0, dragging: false, moved: false, animating: false };
+        if (!image || !imageBox) return;
+
         item.setAttribute('role', 'listitem');
         item.setAttribute('tabindex', '0');
-        item.dataset.index = queues[itemIndex][0] + 1;
-        item._galleryQueue = queues[itemIndex];
-        item._galleryState = state;
-
-        function setImage(box, imageIndex) {
-            var image = galleryImages[imageIndex];
-            box.style.backgroundImage = "url('" + image.src + "')";
-        }
-
-        function render() {
-            var imageIndex = item._galleryQueue[state.index];
-            item.dataset.index = imageIndex + 1;
-            setImage(imageBox, imageIndex);
-            captionBox.textContent = galleryImages[imageIndex].caption;
-        }
-
-        function turnPage(direction) {
-            if (state.animating || item._galleryQueue.length < 2) return;
-            state.animating = true;
-            var nextIndex = (state.index + direction + item._galleryQueue.length) % item._galleryQueue.length;
-            var nextImageIndex = item._galleryQueue[nextIndex];
-            var turnDirection = direction > 0 ? 'next' : 'prev';
-            preloadGalleryImage(nextImageIndex);
-            document.body.classList.add('gallery-turning');
-            setImage(nextBox, nextImageIndex);
-            nextBox.className = 'placeholder-img gallery-next-page page-under ' + turnDirection;
-            imageBox.classList.add('page-front', 'page-turn', turnDirection);
-            window.setTimeout(function() {
-                state.index = nextIndex;
-                render();
-                imageBox.className = 'placeholder-img page-front';
-                nextBox.className = 'placeholder-img gallery-next-page';
-                window.setTimeout(function() {
-                    state.animating = false;
-                    document.body.classList.remove('gallery-turning');
-                }, 260);
-            }, 230);
-        }
-
-        function finish(e) {
-            if (!state.dragging) return;
-            state.dragging = false;
-            item.classList.remove('is-dragging');
-            if (e && item.hasPointerCapture(e.pointerId)) item.releasePointerCapture(e.pointerId);
-            var distance = Math.hypot(state.deltaX, state.deltaY);
-            if (distance > 28) {
-                var direction = Math.abs(state.deltaX) >= Math.abs(state.deltaY) ? state.deltaX : state.deltaY;
-                turnPage(direction < 0 ? 1 : -1);
-            }
-            if (!state.animating) imageBox.style.transform = 'translate3d(0,0,0)';
-            window.setTimeout(function() { state.moved = false; }, 0);
-        }
-
-        item.addEventListener('pointerdown', function(e) {
-            if (e.button > 0) return;
-            state.dragging = true;
-            state.moved = false;
-            state.startX = e.clientX;
-            state.startY = e.clientY;
-            state.deltaX = 0;
-            state.deltaY = 0;
-            item.setPointerCapture(e.pointerId);
-            item.classList.add('is-dragging');
-        });
-        item.addEventListener('pointermove', function(e) {
-            if (!state.dragging) return;
-            state.deltaX = e.clientX - state.startX;
-            state.deltaY = e.clientY - state.startY;
-            if (Math.hypot(state.deltaX, state.deltaY) > 6) state.moved = true;
-            if (state.moved) {
-                e.preventDefault();
-                imageBox.style.transform = 'translate3d(' + state.deltaX * .16 + 'px,' + state.deltaY * .16 + 'px,0)';
-            }
-        }, { passive: false });
-        item.addEventListener('pointerup', finish);
-        item.addEventListener('pointercancel', finish);
-        item.addEventListener('click', function(e) {
-            if (state.moved) { e.preventDefault(); return; }
-            currentImageIndex = parseInt(item.dataset.index, 10) - 1;
+        item.setAttribute('aria-label', '放大查看：' + image.caption);
+        imageBox.style.backgroundImage = "url('" + image.src + "')";
+        item.addEventListener('click', function() {
+            currentImageIndex = imageIndex;
             updateLightbox();
             document.getElementById('lightbox').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -657,9 +573,7 @@ function initInlineGallery(gallery) {
             e.preventDefault();
             item.click();
         });
-        imageBox.classList.add('page-front');
-        render();
-        setImage(nextBox, item._galleryQueue.length > 1 ? item._galleryQueue[1] : item._galleryQueue[0]);
+        preloadGalleryImage(imageIndex);
     });
 }
 
@@ -796,7 +710,7 @@ function toggleMusic() {
 
 // ========== 地图导航 ==========
 function openMap() {
-    window.open('https://uri.amap.com/search?keyword=' + encodeURIComponent('幸福大酒店'));
+    window.open('https://uri.amap.com/search?keyword=' + encodeURIComponent('甘肃省兰州市兰州新区丝路华廷禧宴') + '&view=map&callnative=1', '_blank', 'noopener');
 }
 
 // ========== 回到顶部 ==========
