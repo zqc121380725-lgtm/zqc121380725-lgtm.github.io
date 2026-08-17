@@ -72,6 +72,7 @@ function initEnvelope() {
 
     envelope.addEventListener('click', function() {
         if (envelope.classList.contains('opened')) return;
+        playBackgroundMusic();
         resetPageScroll();
         document.documentElement.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
@@ -706,11 +707,41 @@ function closeLightbox() {
 }
 
 // ========== 音乐控制 ==========
-var isPlaying = false;
-function toggleMusic() {
-    isPlaying = !isPlaying;
+function syncMusicButton() {
+    var audio = document.getElementById('backgroundMusic');
     var btn = document.getElementById('musicToggle');
-    if (btn) btn.classList.toggle('playing', isPlaying);
+    if (!audio || !btn) return;
+    var isPlaying = !audio.paused && !audio.ended;
+    btn.classList.toggle('playing', isPlaying);
+    btn.setAttribute('aria-label', isPlaying ? '暂停背景音乐' : '播放背景音乐');
+    btn.title = isPlaying ? '暂停背景音乐' : '播放背景音乐';
+}
+
+function playBackgroundMusic() {
+    var audio = document.getElementById('backgroundMusic');
+    if (!audio || !audio.paused) return;
+    var playAttempt = audio.play();
+    if (playAttempt && playAttempt.catch) playAttempt.catch(syncMusicButton);
+}
+
+function toggleMusic() {
+    var audio = document.getElementById('backgroundMusic');
+    if (!audio) return;
+    if (audio.paused) {
+        playBackgroundMusic();
+    } else {
+        audio.pause();
+    }
+}
+
+function initMusic() {
+    var audio = document.getElementById('backgroundMusic');
+    if (!audio) return;
+    audio.volume = 0.55;
+    audio.addEventListener('play', syncMusicButton);
+    audio.addEventListener('pause', syncMusicButton);
+    audio.addEventListener('ended', syncMusicButton);
+    syncMusicButton();
 }
 
 // ========== 地图导航 ==========
@@ -766,6 +797,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initInfoCards();
     initGallery();
     warmGalleryImages();
+    initMusic();
     initKeyboard();
     initBackToTop();
     setInterval(updateCountdown, 1000);
