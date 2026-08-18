@@ -1,62 +1,264 @@
-// Socket.IO 连接（可选，不影响基本功能）
+// ========== 可靠实时连接与离线重试 ==========
 let socket = null;
 let isConnected = false;
 var wallWishTotal = 0;
 var maxVisibleWallWishes = 24;
+var liveApiUrl = String(window.LIVE_API_URL || 'https://wedding-invitation-live.onrender.com').replace(/\/$/, '');
+var pendingMutationKey = 'wedding-pending-mutations-v1';
+var renderedWishKeys = Object.create(null);
+var renderedTreeWishKeys = Object.create(null);
+var flushingPendingMutations = false;
 
-async function initializeWishes() {
+function apiEndpoint(pathname) {
+    return liveApiUrl + pathname;
+}
+
+function randomId(prefix) {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return prefix + '-' + window.crypto.randomUUID();
+    }
+    return prefix + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 12);
+}
+
+function getVisitorId() {
     try {
-        socket = io(window.LIVE_API_URL || undefined);
-        socket.on('connect', () => {
-            console.log('已连接到服务器');
-            isConnected = true;
-        });
-        socket.on('disconnect', () => {
-            isConnected = false;
-        });
-        socket.on('initData', (data) => {
-            wallWishTotal = Number(data.totalWishes) || (data.wishes ? data.wishes.length : 0);
-            if (data.wishes) data.wishes.forEach(wish => addWishToWall(wish, false));
-            if (data.treeWishes) data.treeWishes.forEach(wish => addWishToTree(wish, false));
-            updateWishCount();
-        });
-        socket.on('newWish', (wish) => {
-            wallWishTotal += 1;
-            addWishToWall(wish, true);
-            updateWishCount();
-        });
-        socket.on('newTreeWish', (wish) => { addWishToTree(wish, true); });
-        socket.on('seatTaken', (data) => {
-            alert(`座位 ${data.seat} 已被其他人选择，请选择其他座位`);
-            const seatEl = document.querySelector(`[data-seat="${data.seat}"]`);
-            if (seatEl) { seatEl.classList.add('taken'); seatEl.classList.remove('selected'); }
-        });
-    } catch (e) {
-        console.log('Socket.IO 连接失败，尝试 HTTP 方式加载数据');
-        try {
-            const response = await fetch('/api/init');
-            if (response.ok) {
-                const data = await response.json();
-                wallWishTotal = Number(data.totalWishes) || (data.wishes ? data.wishes.length : 0);
-                if (data.wishes) data.wishes.forEach(wish => addWishToWall(wish, false));
-                if (data.treeWishes) data.treeWishes.forEach(wish => addWishToTree(wish, false));
-                updateWishCount();
-            }
-        } catch (fallbackError) {
-            console.log('离线模式运行，祝福墙暂不可用');
-        }
+        var stored = sessionStorage.getItem('wedding-visitor-id-v1');
+        if (stored) return stored;
+        var created = randomId('visit');
+        sessionStorage.setItem('wedding-visitor-id-v1', created);
+        return created;
+    } catch (error) {
+        return randomId('visit');
     }
 }
 
-initializeWishes();
-
-// 安全发送Socket消息
-function socketEmit(event, data) {
-    if (socket) {
-        socket.emit(event, data);
-    } else {
-        console.log('离线模式:', event, data);
+function readPendingMutations() {
+    try {
+        var parsed = JSON.parse(localStorage.getItem(pendingMutationKey) || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+        return [];
     }
+}
+
+function writePendingMutations(records) {
+    try {
+        localStorage.setItem(pendingMutationKey, JSON.stringify(records.slice(-50)));
+    } catch (error) {
+        console.warn('无法写入本机待提交队列:', error.message);
+    }
+}
+
+function rememberPendingMutation(eventName, endpoint, payload) {
+    var records = readPendingMutations();
+    var existing = records.find(function(record) {
+        return record.payload && record.payload.clientMutationId === payload.clientMutationId;
+    });
+    if (existing) return existing;
+    var record = {
+        eventName: eventName,
+        endpoint: endpoint,
+        payload: payload,
+        createdAt: new Date().toISOString()
+    };
+    records.push(record);
+    writePendingMutations(records);
+    return record;
+}
+
+function forgetPendingMutation(clientMutationId) {
+    writePendingMutations(readPendingMutations().filter(function(record) {
+        return !record.payload || record.payload.clientMutationId !== clientMutationId;
+    }));
+}
+
+async function fetchJson(pathname, options, timeoutMilliseconds) {
+    var controller = typeof AbortController === 'function' ? new AbortController() : null;
+    var timeout = controller ? window.setTimeout(function() { controller.abort(); }, timeoutMilliseconds || 25000) : null;
+    try {
+        var requestOptions = Object.assign({}, options || {});
+        if (controller) requestOptions.signal = controller.signal;
+        var response = await fetch(apiEndpoint(pathname), requestOptions);
+        var result = await response.json().catch(function() { return {}; });
+        if (!response.ok || result.ok === false) {
+            var requestError = new Error(result.error || ('服务器返回 ' + response.status));
+            requestError.retryable = result.retryable !== false && response.status >= 500;
+            throw requestError;
+        }
+        return result;
+    } finally {
+        if (timeout) window.clearTimeout(timeout);
+    }
+}
+
+function wishKey(wish) {
+    return wish && (wish.id || [wish.name, wish.message, wish.timestamp].join('|'));
+}
+
+function treeWishKey(wish) {
+    return wish && (wish.id || [wish.name, wish.message, wish.timestamp].join('|'));
+}
+
+function showCommittedWish(wish, isNew) {
+    var key = wishKey(wish);
+    if (!key || renderedWishKeys[key]) return false;
+    renderedWishKeys[key] = true;
+    if (isNew) wallWishTotal += 1;
+    addWishToWall(wish, isNew);
+    updateWishCount();
+    return true;
+}
+
+function showTreeWish(wish, isNew) {
+    var key = treeWishKey(wish);
+    if (!key || renderedTreeWishKeys[key]) return false;
+    renderedTreeWishKeys[key] = true;
+    addWishToTree(wish, isNew);
+    return true;
+}
+
+function applyInitialData(data) {
+    var serverTotal = Number(data && data.totalWishes) || (data && data.wishes ? data.wishes.length : 0);
+    wallWishTotal = Math.max(wallWishTotal, serverTotal);
+    if (data && data.wishes) data.wishes.forEach(function(wish) { showCommittedWish(wish, false); });
+    if (data && data.treeWishes) data.treeWishes.forEach(function(wish) { showTreeWish(wish, false); });
+    updateWishCount();
+}
+
+function socketRequest(eventName, payload) {
+    return new Promise(function(resolve, reject) {
+        if (!socket || !isConnected) {
+            reject(new Error('实时连接不可用'));
+            return;
+        }
+        socket.timeout(9000).emit(eventName, payload, function(error, response) {
+            if (error) {
+                reject(error);
+            } else if (!response || response.ok !== true) {
+                var responseError = new Error(response && response.error ? response.error : '服务器未确认保存');
+                responseError.retryable = !response || response.retryable !== false;
+                reject(responseError);
+            } else {
+                resolve(response);
+            }
+        });
+    });
+}
+
+async function deliverMutation(record) {
+    var socketError = null;
+    if (socket && isConnected) {
+        try {
+            return await socketRequest(record.eventName, record.payload);
+        } catch (error) {
+            socketError = error;
+        }
+    }
+    try {
+        return await fetchJson(record.endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(record.payload)
+        }, 30000);
+    } catch (httpError) {
+        if (socketError) httpError.socketError = socketError;
+        throw httpError;
+    }
+}
+
+async function submitReliable(eventName, endpoint, payload) {
+    var mutationPayload = Object.assign({}, payload, {
+        clientMutationId: payload.clientMutationId || randomId(eventName)
+    });
+    var record = rememberPendingMutation(eventName, endpoint, mutationPayload);
+    try {
+        var response = await deliverMutation(record);
+        forgetPendingMutation(mutationPayload.clientMutationId);
+        return response;
+    } catch (error) {
+        if (error.retryable === false) forgetPendingMutation(mutationPayload.clientMutationId);
+        throw error;
+    }
+}
+
+async function flushPendingMutations() {
+    if (flushingPendingMutations) return;
+    flushingPendingMutations = true;
+    try {
+        var records = readPendingMutations();
+        for (var index = 0; index < records.length; index += 1) {
+            var record = records[index];
+            try {
+                var response = await deliverMutation(record);
+                forgetPendingMutation(record.payload.clientMutationId);
+                if (record.eventName === 'wish' && response.item) showCommittedWish(response.item, true);
+            } catch (error) {
+                console.log('待提交记录仍在本机队列中:', record.eventName);
+            }
+        }
+    } finally {
+        flushingPendingMutations = false;
+    }
+}
+
+async function initializeWishes() {
+    var visitorId = getVisitorId();
+    fetchJson('/api/init', { method: 'GET' }, 30000)
+        .then(applyInitialData)
+        .catch(function() { console.log('HTTP 初始数据暂不可用，等待实时连接'); });
+    fetchJson('/api/visit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clientMutationId: visitorId })
+    }, 30000).catch(function() { console.log('浏览记录将在实时连接建立后补记'); });
+
+    if (typeof window.io !== 'function') {
+        console.log('实时组件未加载，使用 HTTP 模式');
+        flushPendingMutations();
+        return;
+    }
+
+    socket = window.io(liveApiUrl, {
+        auth: { visitorId: visitorId },
+        timeout: 10000,
+        reconnection: true,
+        reconnectionDelay: 1500,
+        reconnectionDelayMax: 8000,
+        transports: ['polling', 'websocket']
+    });
+    socket.on('connect', function() {
+        isConnected = true;
+        flushPendingMutations();
+    });
+    socket.on('disconnect', function() { isConnected = false; });
+    socket.on('connect_error', function() { isConnected = false; });
+    socket.on('initData', applyInitialData);
+    socket.on('newWish', function(wish) { showCommittedWish(wish, true); });
+    socket.on('newTreeWish', function(wish) { showTreeWish(wish, true); });
+    socket.on('seatTaken', function(data) {
+        alert('座位 ' + data.seat + ' 已被其他人选择，请选择其他座位');
+        var seatEl = document.querySelector('[data-seat="' + data.seat + '"]');
+        if (seatEl) { seatEl.classList.add('taken'); seatEl.classList.remove('selected'); }
+    });
+}
+
+initializeWishes();
+window.addEventListener('online', flushPendingMutations);
+window.setInterval(function() {
+    if (readPendingMutations().length) flushPendingMutations();
+}, 30000);
+
+var interactionEndpoints = {
+    treeWish: '/api/tree-wishes',
+    seatSelect: '/api/seat-selections',
+    foodPref: '/api/food-prefs',
+    gameScore: '/api/game-scores'
+};
+
+function socketEmit(eventName, payload) {
+    var endpoint = interactionEndpoints[eventName];
+    if (endpoint) return submitReliable(eventName, endpoint, payload);
+    return socketRequest(eventName, payload);
 }
 
 // ========== 花瓣飘落 ==========
@@ -266,7 +468,7 @@ function openRsvpForm(status) {
     window.setTimeout(function() { document.getElementById('guestName').focus(); }, 320);
 }
 
-function submitRsvpForm(event) {
+async function submitRsvpForm(event) {
     event.preventDefault();
     var name = document.getElementById('guestName');
     var contact = document.getElementById('guestContact');
@@ -285,17 +487,35 @@ function submitRsvpForm(event) {
         return;
     }
 
-    socketEmit('rsvp', { name: guestName, contact: guestContact, status: pendingRsvpStatus, count: guestCount });
-    closeModal('rsvpFormModal');
-    name.value = '';
-    contact.value = '';
-    if (count) count.value = '1';
+    var button = document.getElementById('rsvpSubmitButton');
+    var originalButtonText = button ? button.textContent : '';
+    if (button) { button.disabled = true; button.textContent = '正在安全保存…'; }
+    error.textContent = '正在等待服务器确认，请不要关闭页面';
+    try {
+        await submitReliable('rsvp', '/api/rsvp', {
+            name: guestName,
+            contact: guestContact,
+            status: pendingRsvpStatus,
+            count: guestCount
+        });
+        error.textContent = '';
+        closeModal('rsvpFormModal');
+        name.value = '';
+        contact.value = '';
+        if (count) count.value = '1';
 
-    var title = document.getElementById('rsvpTitle');
-    var msg = document.getElementById('rsvpMessage');
-    if (title) title.textContent = pendingRsvpStatus === 'accept' ? '感谢您的出席' : '收到您的回复';
-    if (msg) msg.textContent = pendingRsvpStatus === 'accept' ? guestName + '，期待与您相见' : guestName + '，虽然遗憾但我们理解';
-    openModal('rsvpModal');
+        var title = document.getElementById('rsvpTitle');
+        var msg = document.getElementById('rsvpMessage');
+        if (title) title.textContent = pendingRsvpStatus === 'accept' ? '感谢您的出席' : '收到您的回复';
+        if (msg) msg.textContent = pendingRsvpStatus === 'accept' ? guestName + '，期待与您相见' : guestName + '，虽然遗憾但我们理解';
+        openModal('rsvpModal');
+    } catch (submitError) {
+        error.textContent = submitError.retryable === false
+            ? submitError.message
+            : '网络暂时不稳定。回执已暂存在本设备，联网后会自动重试；请勿清除微信缓存。';
+    } finally {
+        if (button) { button.disabled = false; button.textContent = originalButtonText; }
+    }
 }
 
 // ========== 许愿树祝福 ==========
@@ -303,7 +523,7 @@ function openWishModal() {
     openModal('treeWishModal');
 }
 
-function submitTreeWish() {
+async function submitTreeWish() {
     var nameEl = document.getElementById('wishName');
     var textEl = document.getElementById('wishTreeText');
     var name = nameEl ? nameEl.value || '匿名' : '匿名';
@@ -314,11 +534,15 @@ function submitTreeWish() {
     var activeColor = document.querySelector('.color-dot.active');
     var color = activeColor ? activeColor.dataset.color : '#fce4ec';
 
-    socketEmit('treeWish', { name: name, message: message, color: color });
-    if (textEl) textEl.value = '';
-
-    showSuccessModal('🌳', '祝福已挂上', '感谢您的美好祝福');
-    closeModal('treeWishModal');
+    try {
+        var response = await socketEmit('treeWish', { name: name, message: message, color: color });
+        if (response.item) showTreeWish(response.item, true);
+        if (textEl) textEl.value = '';
+        showSuccessModal('🌳', '祝福已保存', '感谢您的美好祝福');
+        closeModal('treeWishModal');
+    } catch (error) {
+        alert(error.retryable === false ? error.message : '网络暂不可用，祝福已保存在本设备，联网后会自动重试。');
+    }
 }
 
 function addWishToTree(wish, isNew) {
@@ -343,7 +567,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ========== 祝福墙 ==========
-function sendWallWish() {
+async function sendWallWish() {
     var nameEl = document.getElementById('wallName');
     var msgEl = document.getElementById('wallMessage');
     var name = nameEl ? nameEl.value || '匿名' : '匿名';
@@ -351,18 +575,28 @@ function sendWallWish() {
 
     if (!message) { alert('请写下您的祝福'); return; }
 
-    socketEmit('wish', { name: name, message: message });
-    if (!socket) {
-        wallWishTotal += 1;
-        addWishToWall({ name: name, message: message }, true);
-        updateWishCount();
+    var status = document.getElementById('wallWishStatus');
+    var button = document.getElementById('wallWishSubmitButton');
+    if (button) { button.disabled = true; button.textContent = '正在安全保存…'; }
+    if (status) status.textContent = '正在等待服务器确认，请不要关闭页面';
+    try {
+        var response = await submitReliable('wish', '/api/wishes', { name: name, message: message });
+        if (response.item) showCommittedWish(response.item, true);
+        if (msgEl) msgEl.value = '';
+        if (status) status.textContent = '已由服务器确认保存';
+        playLetterSendAnimation();
+        window.setTimeout(function() {
+            showSuccessModal('💝', '祝福已保存', '感谢您的美好祝福');
+        }, 900);
+    } catch (submitError) {
+        if (status) {
+            status.textContent = submitError.retryable === false
+                ? submitError.message
+                : '网络暂时不稳定。祝福已保存在本设备，联网后会自动重试；请勿清除微信缓存。';
+        }
+    } finally {
+        if (button) { button.disabled = false; button.textContent = '封缄并送出'; }
     }
-    if (msgEl) msgEl.value = '';
-
-    playLetterSendAnimation();
-    window.setTimeout(function() {
-        showSuccessModal('💝', '祝福已送出', '感谢您的美好祝福');
-    }, 900);
 }
 
 function playLetterSendAnimation() {
@@ -425,17 +659,21 @@ function selectSeat(el) {
     if (seatText) seatText.textContent = '已选择: ' + selectedSeat;
 }
 
-function confirmSeat() {
+async function confirmSeat() {
     if (!selectedSeat) { alert('请先选择座位'); return; }
     var nameEl = document.getElementById('seatName');
     var name = nameEl ? nameEl.value || '匿名' : '匿名';
-    socketEmit('seatSelect', { name: name, seat: selectedSeat });
-    showSuccessModal('💺', '座位已确认', '您已选择座位 ' + selectedSeat);
-    closeModal('seatModal');
+    try {
+        await socketEmit('seatSelect', { name: name, seat: selectedSeat });
+        showSuccessModal('💺', '座位已确认', '您已选择座位 ' + selectedSeat);
+        closeModal('seatModal');
+    } catch (error) {
+        alert(error.retryable === false ? error.message : '网络暂不可用，座位选择已保存在本设备，联网后会自动重试。');
+    }
 }
 
 // ========== 菜品偏好 ==========
-function submitFoodPref() {
+async function submitFoodPref() {
     var nameEl = document.getElementById('foodName');
     var noteEl = document.getElementById('foodNote');
     var name = nameEl ? nameEl.value || '匿名' : '匿名';
@@ -445,9 +683,13 @@ function submitFoodPref() {
 
     if (prefs.length === 0 && !note) { alert('请至少选择一项或填写备注'); return; }
 
-    socketEmit('foodPref', { name: name, preferences: prefs, note: note });
-    showSuccessModal('🍽️', '已提交', '感谢您的反馈');
-    closeModal('foodModal');
+    try {
+        await socketEmit('foodPref', { name: name, preferences: prefs, note: note });
+        showSuccessModal('🍽️', '已保存', '感谢您的反馈');
+        closeModal('foodModal');
+    } catch (error) {
+        alert(error.retryable === false ? error.message : '网络暂不可用，菜品偏好已保存在本设备，联网后会自动重试。');
+    }
 }
 
 // ========== 互动游戏 ==========
@@ -501,7 +743,9 @@ function endGame() {
     var resultText = document.getElementById('resultText');
     if (resultText) resultText.textContent = text;
 
-    socketEmit('gameScore', { score: gameScore });
+    socketEmit('gameScore', { score: gameScore }).catch(function() {
+        console.log('游戏成绩已进入本机待提交队列');
+    });
 }
 
 function resetGame() {
@@ -836,9 +1080,7 @@ function initMusic() {
     audio.addEventListener('play', syncMusicButton);
     audio.addEventListener('pause', syncMusicButton);
     audio.addEventListener('ended', syncMusicButton);
-    audio.addEventListener('canplay', playBackgroundMusic, { once: true });
     syncMusicButton();
-    playBackgroundMusic();
 
     function retryAutoplay() {
         playBackgroundMusic();
@@ -850,10 +1092,6 @@ function initMusic() {
     document.addEventListener('pointerdown', retryAutoplay, { once: true, passive: true });
     document.addEventListener('touchstart', retryAutoplay, { once: true, passive: true });
     document.addEventListener('keydown', retryAutoplay, { once: true });
-    window.addEventListener('pageshow', playBackgroundMusic);
-    document.addEventListener('visibilitychange', function() {
-        if (!document.hidden) playBackgroundMusic();
-    });
 }
 
 // ========== 地图导航 ==========

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>婚礼请柬 - 管理后台</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -437,66 +436,19 @@
             box-shadow: 0 16px 42px rgba(16,47,58,.2);
         }
 
-        .section-heading {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 18px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--admin-line);
-        }
-        .section-heading h2 { color: var(--admin-ocean); font: 600 24px var(--admin-display); }
-        .section-heading p { color: var(--admin-muted); font-size: 12px; }
-        .overview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .overview-panel {
-            min-height: 178px;
-            padding: 18px;
-            background: #fffdf7;
-            border: 1px solid var(--admin-line);
-            border-radius: 3px;
-        }
-        .overview-panel h3 {
-            margin-bottom: 14px;
-            color: var(--admin-ocean);
-            font: 600 17px var(--admin-display);
-        }
-        .overview-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 8px 0;
-            color: var(--admin-muted);
-            border-top: 1px solid rgba(23,72,88,.1);
-            font-size: 12px;
-        }
-        .overview-row strong { color: var(--admin-ink); font: 600 17px var(--admin-display); }
-        .archive-group + .archive-group { margin-top: 26px; }
-        .archive-title {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            color: var(--admin-ocean);
-            font-size: 14px;
-        }
-        .archive-title span { color: var(--admin-muted); font: 600 12px var(--admin-display); }
-        .archive-note {
-            margin-bottom: 18px;
-            padding: 10px 12px;
-            color: var(--admin-muted);
-            background: var(--admin-mist);
-            border-left: 3px solid var(--admin-gold);
-            font-size: 12px;
-        }
-        .data-chip {
-            display: inline-block;
-            margin: 3px 6px 3px 0;
-            padding: 4px 8px;
-            color: var(--admin-ocean);
-            background: var(--admin-mist);
-            border-radius: 2px;
-            font-size: 12px;
-        }
+        .section-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--admin-line); }
+        .section-heading h2 { color:var(--admin-ocean); font:600 24px var(--admin-display); }
+        .section-heading p { color:var(--admin-muted); font-size:12px; }
+        .overview-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+        .overview-panel { min-height:178px; padding:18px; background:#fffdf7; border:1px solid var(--admin-line); border-radius:3px; }
+        .overview-panel h3 { margin-bottom:14px; color:var(--admin-ocean); font:600 17px var(--admin-display); }
+        .overview-row { display:flex; justify-content:space-between; gap:12px; padding:8px 0; color:var(--admin-muted); border-top:1px solid rgba(23,72,88,.1); font-size:12px; }
+        .overview-row strong { color:var(--admin-ink); font:600 17px var(--admin-display); }
+        .archive-group + .archive-group { margin-top:26px; }
+        .archive-title { display:flex; justify-content:space-between; margin-bottom:10px; color:var(--admin-ocean); font-size:14px; }
+        .archive-title span { color:var(--admin-muted); font:600 12px var(--admin-display); }
+        .archive-note { margin-bottom:18px; padding:10px 12px; color:var(--admin-muted); background:var(--admin-mist); border-left:3px solid var(--admin-gold); font-size:12px; }
+        .data-chip { display:inline-block; margin:3px 6px 3px 0; padding:4px 8px; color:var(--admin-ocean); background:var(--admin-mist); border-radius:2px; font-size:12px; }
 
         @media (max-width: 1100px) {
             .stats-grid { grid-template-columns: repeat(3, minmax(150px, 1fr)); }
@@ -523,6 +475,7 @@
         <div style="display: flex; align-items: center;">
             <button class="refresh-btn" onclick="refreshData()">🔄 刷新</button>
             <button class="export-btn" onclick="exportData()">📥 导出数据</button>
+            <button class="export-btn" onclick="downloadFullBackup()">🛡️ 完整备份</button>
             <div class="live-badge">
                 <span class="live-dot"></span>
                 <span>实时更新</span>
@@ -598,7 +551,7 @@
                 <section class="archive-group"><h3 class="archive-title">游戏记录 <span id="game-count">0 条</span></h3><div id="games-list"></div></section>
             </div>
             <div class="tab-content" id="visitors-tab">
-                <div class="section-heading"><div><h2>访问记录</h2><p>记录 Socket.IO 连接，刷新和重连可能产生新记录</p></div></div>
+                <div class="section-heading"><div><h2>访问记录</h2><p>同一页面会话通过唯一编号去重，网络重连不会重复计数</p></div></div>
                 <div id="visitors-list"></div>
             </div>
         </div>
@@ -610,9 +563,20 @@
     </div>
 
     <script src="/live-config.js"></script>
-    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" crossorigin="anonymous"></script>
+    <script src="vendor/socket.io.min.js?v=4.8.1"></script>
     <script>
-        const socket = io(window.LIVE_API_URL || undefined);
+        const liveApiUrl = String(window.LIVE_API_URL || 'https://wedding-invitation-live.onrender.com').replace(/\/$/, '');
+        let adminToken = '';
+        try { adminToken = sessionStorage.getItem('wedding-admin-token') || ''; } catch (error) {}
+        if (!adminToken) {
+            adminToken = window.prompt('请输入 Render 环境变量 ADMIN_TOKEN（仅保存在当前标签页）') || '';
+            try { if (adminToken) sessionStorage.setItem('wedding-admin-token', adminToken); } catch (error) {}
+        }
+        const socket = io(liveApiUrl, {
+            auth: { adminToken },
+            transports: ['polling', 'websocket'],
+            timeout: 10000
+        });
         const emptyData = () => ({ rsvp: [], wishes: [], treeWishes: [], visitors: [], foodPrefs: [], seatSelections: [], gameScores: [] });
         let allData = emptyData();
 
@@ -621,6 +585,10 @@
             console.log('已连接到服务器');
             socket.emit('getAllData');
             socket.emit('getStats');
+        });
+        socket.on('adminError', data => {
+            try { sessionStorage.removeItem('wedding-admin-token'); } catch (error) {}
+            alert((data && data.error ? data.error : '管理令牌无效') + '。请刷新页面重新输入。');
         });
 
         // 初始化数据
@@ -891,16 +859,27 @@
 
         // 标记已读
         function markRead(type, id) {
-            socket.emit('markRead', type, id);
-            const card = document.querySelector(`[data-id="${id}"]`);
-            if (card) card.classList.remove('unread');
-            socket.emit('getStats');
+            socket.timeout(10000).emit('markRead', type, id, (error, result) => {
+                if (error || !result || !result.ok) {
+                    alert(result && result.error ? result.error : '服务器未确认保存，请重试');
+                    return;
+                }
+                socket.emit('getAllData');
+                socket.emit('getStats');
+            });
         }
 
         // 删除项目
         function deleteItem(type, id) {
-            if (confirm('确定要删除吗？')) {
-                socket.emit('deleteItem', type, id);
+            if (confirm('确定要删除吗？服务器会先创建可恢复快照。')) {
+                socket.timeout(10000).emit('deleteItem', type, id, (error, result) => {
+                    if (error || !result || !result.ok) {
+                        alert(result && result.error ? result.error : '服务器未确认删除，请重试');
+                        return;
+                    }
+                    socket.emit('getAllData');
+                    socket.emit('getStats');
+                });
             }
         }
 
@@ -927,6 +906,24 @@
             link.href = URL.createObjectURL(blob);
             link.download = `wedding-data-${new Date().toISOString().slice(0,10)}.csv`;
             link.click();
+        }
+
+        async function downloadFullBackup() {
+            if (!adminToken) { alert('请先刷新页面并输入 ADMIN_TOKEN'); return; }
+            try {
+                const response = await fetch(liveApiUrl + '/api/admin/backup', {
+                    headers: { Authorization: 'Bearer ' + adminToken }
+                });
+                if (!response.ok) throw new Error('完整备份下载失败：' + response.status);
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `wedding-full-backup-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            } catch (error) {
+                alert(error.message);
+            }
         }
 
         function generateCSV() {
