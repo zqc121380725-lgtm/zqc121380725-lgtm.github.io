@@ -568,6 +568,7 @@
         const liveApiUrl = String(window.LIVE_API_URL || 'https://wedding-invitation-live.onrender.com').replace(/\/$/, '');
         let adminToken = '';
         try { adminToken = sessionStorage.getItem('wedding-admin-token') || ''; } catch (error) {}
+        adminToken = '__public_view__';
         if (!adminToken) {
             adminToken = window.prompt('请输入 Render 环境变量 ADMIN_TOKEN（仅保存在当前标签页）') || '';
             try { if (adminToken) sessionStorage.setItem('wedding-admin-token', adminToken); } catch (error) {}

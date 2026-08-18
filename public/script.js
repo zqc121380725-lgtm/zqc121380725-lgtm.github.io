@@ -201,6 +201,18 @@ async function flushPendingMutations() {
     }
 }
 
+function retryInitialData(attempt) {
+    return fetchJson('/api/init', { method: 'GET' }, 30000)
+        .then(applyInitialData)
+        .catch(function(error) {
+            if ((attempt || 0) < 3) {
+                return new Promise(function(resolve) { window.setTimeout(resolve, 1800 * ((attempt || 0) + 1)); })
+                    .then(function() { return retryInitialData((attempt || 0) + 1); });
+            }
+            console.log('initial data retry exhausted', error.message);
+        });
+}
+
 async function initializeWishes() {
     var visitorId = getVisitorId();
     fetchJson('/api/init', { method: 'GET' }, 30000)
@@ -243,6 +255,7 @@ async function initializeWishes() {
 }
 
 initializeWishes();
+retryInitialData(0);
 window.addEventListener('online', flushPendingMutations);
 window.setInterval(function() {
     if (readPendingMutations().length) flushPendingMutations();
