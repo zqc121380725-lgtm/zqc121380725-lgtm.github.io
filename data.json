@@ -1,0 +1,45 @@
+﻿{
+    "totalWishes":  1,
+    "treeWishes":  [
+
+                   ],
+    "rsvp":  [
+
+             ],
+    "visitors":  [
+                     {
+                         "timestamp":  "2026-08-16T19:30:22.098Z",
+                         "id":  "1786908622098-492kf9",
+                         "ip":  "::1"
+                     },
+                     {
+                         "timestamp":  "2026-08-16T19:30:31.952Z",
+                         "id":  "1786908631952-guxqei",
+                         "ip":  "::1"
+                     },
+                     {
+                         "timestamp":  "2026-08-16T19:32:39.132Z",
+                         "id":  "1786908759132-2qtndg",
+                         "ip":  "::1"
+                     }
+                 ],
+    "seatSelections":  [
+
+                       ],
+    "gameScores":  [
+
+                   ],
+    "totalVisitors":  3,
+    "foodPrefs":  [
+
+                  ],
+    "wishes":  [
+                   {
+                       "message":  "长大了",
+                       "timestamp":  "2026-08-18T00:04:33.090Z",
+                       "name":  "曹梓浩",
+                       "id":  "recovered-1787011473090-0",
+                       "ip":  "recovered"
+                   }
+               ]
+}
