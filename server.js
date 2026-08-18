@@ -616,6 +616,18 @@ io.on('connection', socket => {
             socket.emit('adminError', { error: '未授权' });
             return;
         }
+        if (socketIsViewer(socket)) {
+            socket.emit('allData', {
+                rsvp: [],
+                wishes: data.wishes,
+                treeWishes: data.treeWishes,
+                visitors: [],
+                foodPrefs: [],
+                seatSelections: [],
+                gameScores: []
+            });
+            return;
+        }
         socket.emit('allData', data);
     });
 
