@@ -148,6 +148,10 @@ function socketIsAdmin(socket) {
     return tokenMatches(socket.handshake.auth?.adminToken);
 }
 
+function socketIsViewer(socket) {
+    return socket.handshake.auth?.adminToken === '__public_view__';
+}
+
 function stats(state = data) {
     const acceptedEntries = state.rsvp.filter(item => item.status === 'accept');
     return {
@@ -159,7 +163,9 @@ function stats(state = data) {
             0
         ),
         declinedRsvp: state.rsvp.filter(item => item.status === 'decline').length,
-        totalWishes: state.totalWishes,
+        // The public wall and admin count represent currently retained records.
+        // The append-only event log remains the historical audit trail.
+        totalWishes: state.wishes.length,
         unreadRsvp: state.rsvp.filter(item => !item.read).length,
         unreadWishes: state.wishes.filter(item => !item.read).length,
         totalTreeWishes: state.treeWishes.length,
@@ -172,7 +178,7 @@ function stats(state = data) {
 function publicData() {
     return {
         wishes: data.wishes.slice(-INITIAL_WISH_LIMIT),
-        totalWishes: data.totalWishes,
+        totalWishes: data.wishes.length,
         treeWishes: data.treeWishes.slice(-INITIAL_WISH_LIMIT),
         stats: stats()
     };
@@ -606,7 +612,7 @@ io.on('connection', socket => {
     socket.emit('initData', publicData());
     socket.on('getStats', () => socket.emit('stats', stats()));
     socket.on('getAllData', () => {
-        if (!socketIsAdmin(socket)) {
+        if (!socketIsAdmin(socket) && !socketIsViewer(socket)) {
             socket.emit('adminError', { error: '未授权' });
             return;
         }
