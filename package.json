@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "test": "node --test test/*.test.js",
+    "backup:export": "node tools/export-backup.js",
+    "backup:restore": "node tools/restore-backup.js",
     "optimize:images": "node tools/optimize-images.js"
   },
   "dependencies": {

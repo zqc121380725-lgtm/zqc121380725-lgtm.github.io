@@ -1,205 +1,58 @@
-# 👤 管理员控制面板使用手册
+# 婚礼邀请函管理与备份手册
 
-## 🔐 访问管理员面板
+## 管理后台
 
-### 管理员链接
-📍 **https://wedding-invitation-live.onrender.com/admin**
+打开：<https://zt20261003.love/admin.html>
 
-> ⚠️ 注意：此链接直接连接到 Render 后端，只能在服务器运行时访问
+页面会要求输入 Render 环境变量 `ADMIN_TOKEN`。令牌只保存在当前标签页的 `sessionStorage` 中，关闭标签页后需要重新输入。不要把令牌发给宾客，也不要写进前端或 GitHub。
 
----
+管理后台可以查看：
 
-## 📊 管理员面板功能
+- 浏览量；
+- 出席/缺席回执、联系方式与出席人数；
+- 祝福墙、许愿树、菜品偏好、座位和游戏记录；
+- 未读数量和实时新消息。
 
-### 1️⃣ 实时统计面板
-```
-显示：
-• 总访客数
-• 出席人数
-• 缺席人数
-• 祝福总数
-• 实时更新计数
-```
+## 删除与恢复保护
 
-### 2️⃣ RSVP 出席列表
-展示所有出席/缺席的宾客信息：
+删除操作必须经过 `ADMIN_TOKEN` 验证。服务器会在删除前完成以下操作：
 
-| 信息项 | 说明 |
-|-----|------|
-| 姓名 | 宾客填写的名字 |
-| 联系方式 | 电话/微信号 |
-| 出席状态 | ✓ 出席 或 ✗ 缺席 |
-| 人数 | 宾客陪同的人数 |
-| 提交时间 | 何时填写的 |
+1. 创建一份包含待删除记录的完整快照；
+2. 在追加式事件日志中写入删除事件和被删除的原记录；
+3. 在同一个 PostgreSQL 事务里更新当前状态；
+4. 数据库提交成功后，管理页面才显示删除成功。
 
-**功能：**
-- 可删除错误的 RSVP 记录（点击删除按钮）
-- 导出为 CSV 文件用于统计
+因此误删可以从 `wedding_snapshots` 或 `wedding_events` 恢复。
 
-### 3️⃣ 祝福墙管理
-显示所有宾客的祝福：
+## 两种导出
 
-| 信息项 | 说明 |
-|-----|------|
-| 宾客名字 | 祝福的宾客 |
-| 祝福内容 | 写下的祝福语 |
-| 提交时间 | 何时留言的 |
+- **导出数据**：下载便于 Excel 打开的 CSV。
+- **完整备份**：下载当前状态、全部追加事件和全部快照组成的 JSON 恢复包。
 
-**功能：**
-- 实时查看新祝福
-- 删除不适当的内容（点击删除按钮）
-- 查看祝福总数
+建议在大量发送邀请前、婚礼前一周、婚礼前一天各下载一次“完整备份”，保存到电脑和一个可信云盘。备份包含联系方式，不要公开分享。
 
----
+## 健康检查
 
-## 📈 数据管理
+打开：<https://wedding-invitation-live.onrender.com/health>
 
-### 本地数据文件
-**位置：** `c:\Users\13398\Desktop\wedding-invitation\data.json`
+正式收集数据前必须确认：
 
-**包含内容：**
-```json
-{
-  "rsvp": [],           // 所有RSVP出席记录
-  "wishes": [],         // 所有祝福语
-  "visitors": [],       // 访客记录
-  "totalWishes": 0,     // 祝福总数
-  "totalVisitors": 0,   // 访客总数
-  ...
-}
+- `ok` 为 `true`；
+- `storage` 为 `postgres`；
+- `persistence` 为 `ok`；
+- `adminProtection` 为 `enabled`；
+- `backup.events` 与 `backup.snapshots` 会随着互动增长。
+
+如果 `storage` 显示 `file`，Render 仍在使用临时磁盘，重启后会丢失；请立即检查 `DATABASE_URL`。
+
+## 本机命令行备份
+
+详见 `FREE_DATABASE_SETUP.md`。常用命令：
+
+```powershell
+$env:DATABASE_URL = '<新的 Neon Pooled connection>'
+npm.cmd run backup:export
+Remove-Item Env:DATABASE_URL
 ```
 
-### 数据备份
-- 如果数据意外被清空，服务器会自动创建备份：
-  - 备份位置：`data.json.backup-[时间戳].json`
-  - 您可以手动恢复备份内容
-
-### 数据同步
-- **前端到后端**：通过 Socket.IO 实时同步
-- **后端持久化**：每次数据变化自动保存到 `data.json`
-- **两个分支同步**：
-  - main 分支（GitHub Pages）
-  - render-backend 分支（Render 后端）
-
----
-
-## 🔧 常用操作
-
-### 1. 查看今日出席情况
-1. 打开管理员面板
-2. 查看「实时统计」部分
-3. 记下出席人数和缺席人数
-
-### 2. 导出出席名单
-1. 在「RSVP 出席列表」中
-2. 点击**「导出 CSV」**按钮
-3. 打开 Excel 进行统计和排序
-
-### 3. 删除错误记录
-1. 在「RSVP 出席列表」或「祝福墙」找到要删除的项
-2. 点击该项目的**「删除」**按钮
-3. 确认删除
-
-### 4. 实时监控
-- 宾客提交 RSVP 或祝福时，管理员面板会**实时刷新**
-- 推荐在婚礼当天打开此面板实时监控
-
----
-
-## 🚨 故障排查
-
-### 问题 1：管理员面板显示 404
-**原因：** Render 后端服务未启动
-**解决方案：**
-1. 稍候几分钟，Render 可能在启动中
-2. 访问 https://wedding-invitation-live.onrender.com/health
-3. 如果返回 200，说明后端已启动
-
-### 问题 2：数据无法保存
-**原因：** 后端连接失败
-**解决方案：**
-1. 检查网络连接
-2. 刷新页面重新连接
-3. 检查浏览器开发者工具（F12）的错误日志
-
-### 问题 3：祝福未实时显示
-**原因：** Socket.IO 连接断开（常见于微信浏览器）
-**解决方案：**
-1. 刷新页面
-2. HTTP fallback 会自动加载存储的祝福
-3. 等待 1-2 秒让数据加载完成
-
----
-
-## 📱 实时连接说明
-
-### Socket.IO 连接流程
-```
-浏览器
-  ↓
-尝试 WebSocket 连接
-  ↓
-  ├─ ✅ 成功 → 实时更新（最佳）
-  │
-  └─ ❌ 失败 → HTTP fallback → 拉取初始数据 → 轮询更新
-```
-
-### 微信浏览器特殊处理
-- 微信阻止 WebSocket
-- 系统自动使用 HTTP 获取初始数据
-- 用户仍可提交，后端会保存
-
----
-
-## 📞 技术支持
-
-### 后端服务检查
-- **健康检查**：https://wedding-invitation-live.onrender.com/health
-- **初始数据**：https://wedding-invitation-live.onrender.com/api/init
-- **管理员面板**：https://wedding-invitation-live.onrender.com/admin
-
-### 前端服务检查
-- **主网站**：https://zt20261003.love/
-- **状态码**：应返回 200
-
-### 日志查询
-- GitHub Pages 部署日志：GitHub Actions 工作流
-- Render 后端日志：Render 控制面板
-
----
-
-## 💡 最佳实践
-
-1. **定期备份**
-   - 在婚礼前一天备份 data.json
-   - 婚礼后妥善保存数据作为纪念
-
-2. **定期检查**
-   - 每天查看一次出席人数
-   - 有任何异常立即联系宾客确认
-
-3. **婚礼当天**
-   - 打开管理员面板实时监控
-   - 准备好联系信息以便随时追访
-
-4. **数据保护**
-   - 不要手动删除 data.json
-   - 系统已有自动备份机制
-   - 如需恢复可从备份文件恢复
-
----
-
-## 📋 快速参考
-
-| 功能 | 链接 | 说明 |
-|-----|------|------|
-| 宾客邀请 | https://zt20261003.love/ | 前端（公开） |
-| 管理员面板 | https://wedding-invitation-live.onrender.com/admin | 后端（私密） |
-| 健康检查 | https://wedding-invitation-live.onrender.com/health | API 状态 |
-| 初始数据 | https://wedding-invitation-live.onrender.com/api/init | 数据 API |
-
----
-
-## 🎊 祝福您的婚礼圆满成功！
-
-Made with ❤️
+恢复命令必须带 `--confirm RESTORE`，恢复前也会自动保留当前状态快照。
