@@ -596,7 +596,7 @@ io.on('connection', socket => {
     const isAdmin = socketIsAdmin(socket);
     if (isAdmin) {
         socket.join('admins');
-    } else {
+    } else if (!socketIsViewer(socket)) {
         const visitorMutationId = normalizeClientMutationId(socket.handshake.auth?.visitorId)
             || `socket-${socket.id}`;
         addRecordMutation('visitors', {}, {
