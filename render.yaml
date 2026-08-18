@@ -6,3 +6,6 @@ services:
     startCommand: npm start
     healthCheckPath: /health
     autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        sync: false
