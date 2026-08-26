@@ -164,20 +164,12 @@ function maskContact(value) {
     return contact.length > 2 ? `${contact.slice(0, 1)}***${contact.slice(-1)}` : '**';
 }
 
-function maskIp(value) {
-    const ip = String(value || '').replace(/^::ffff:/, '');
-    const ipv4 = ip.split('.');
-    if (ipv4.length === 4) return `${ipv4[0]}.${ipv4[1]}.*.*`;
-    const ipv6 = ip.split(':').filter(Boolean);
-    return ipv6.length ? `${ipv6.slice(0, 2).join(':')}:****` : '未知IP';
-}
-
 function viewerRsvp(item) {
     return { ...item, contact: maskContact(item.contact) };
 }
 
 function viewerVisitor(item) {
-    return { ...item, ip: maskIp(item.ip) };
+    return { ...item, ip: String(item.ip || '').replace(/^::ffff:/, '') || '未知IP' };
 }
 
 function stats(state = data) {

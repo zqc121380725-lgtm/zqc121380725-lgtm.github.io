@@ -327,7 +327,7 @@ test('管理数据受令牌保护，HTTP 互动回退完整可用', async t => {
     assert.equal(viewerData.rsvp.length, 1);
     assert.notEqual(viewerData.rsvp[0].contact, 'private-contact');
     assert.ok(viewerData.visitors.length >= 1);
-    assert.ok(viewerData.visitors.every(visitor => !String(visitor.ip).match(/^(?:\d{1,3}\.){3}\d{1,3}$/)));
+    assert.ok(viewerData.visitors.every(visitor => !String(visitor.ip).includes('*')));
 
     const routes = [
         ['/api/tree-wishes', { name: '树', message: '幸福', color: '#fce4ec', clientMutationId: 'tree-http-001' }],
