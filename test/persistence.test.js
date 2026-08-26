@@ -108,12 +108,12 @@ function connectGuest(port, suffix = 'guest') {
     });
 }
 
-function connectViewer(port) {
+function connectViewer(port, viewerPassword = '') {
     return new Promise((resolve, reject) => {
         const socket = io(`http://127.0.0.1:${port}`, {
             reconnection: false,
             timeout: 5_000,
-            auth: { adminToken: '__public_view__' }
+            auth: { adminToken: '__public_view__', viewerPassword }
         });
         socket.once('connect', () => resolve(socket));
         socket.once('connect_error', reject);
@@ -282,11 +282,13 @@ test('管理数据受令牌保护，HTTP 互动回退完整可用', async t => {
     let adminSocket;
     let guestSocket;
     let viewerSocket;
+    let privateViewerSocket;
 
     t.after(async () => {
         if (adminSocket) adminSocket.disconnect();
         if (guestSocket) guestSocket.disconnect();
         if (viewerSocket) viewerSocket.disconnect();
+        if (privateViewerSocket) privateViewerSocket.disconnect();
         await stopServer(running);
         fs.rmSync(tempDir, { recursive: true, force: true });
     });
@@ -295,6 +297,7 @@ test('管理数据受令牌保护，HTTP 互动回退完整可用', async t => {
     adminSocket = await connect(port, 'security-admin');
     guestSocket = await connectGuest(port, 'security-guest');
     viewerSocket = await connectViewer(port);
+    privateViewerSocket = await connectViewer(port, '20261003');
 
     const adminError = nextEvent(guestSocket, 'adminError');
     guestSocket.emit('getAllData');
@@ -327,7 +330,13 @@ test('管理数据受令牌保护，HTTP 互动回退完整可用', async t => {
     assert.equal(viewerData.rsvp.length, 1);
     assert.notEqual(viewerData.rsvp[0].contact, 'private-contact');
     assert.ok(viewerData.visitors.length >= 1);
-    assert.ok(viewerData.visitors.every(visitor => !String(visitor.ip).includes('*')));
+    assert.ok(viewerData.visitors.every(visitor => String(visitor.ip).includes('*') || visitor.ip === '未知IP'));
+
+    const privateDataEvent = nextEvent(privateViewerSocket, 'allData');
+    privateViewerSocket.emit('getAllData');
+    const privateData = await privateDataEvent;
+    assert.equal(privateData.rsvp[0].contact, 'private-contact');
+    assert.ok(privateData.visitors.every(visitor => !String(visitor.ip).includes('*')));
 
     const routes = [
         ['/api/tree-wishes', { name: '树', message: '幸福', color: '#fce4ec', clientMutationId: 'tree-http-001' }],

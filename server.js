@@ -14,6 +14,7 @@ const FRONTEND_URL = String(process.env.FRONTEND_URL || 'https://zt20261003.love
 const INITIAL_WISH_LIMIT = 24;
 const STORED_WISH_LIMIT = 500;
 const STORED_VISITOR_LIMIT = 200;
+const PRIVATE_VIEWER_PASSWORD_HASH = 'f8f414d20c126ae9256dba72d8d31f2690718c2310817a8740ea25b4d230db8e';
 const ARRAY_FIELDS = [
     'rsvp',
     'wishes',
@@ -152,6 +153,15 @@ function socketIsViewer(socket) {
     return socket.handshake.auth?.adminToken === '__public_view__';
 }
 
+function socketIsPrivateViewer(socket) {
+    if (!socketIsViewer(socket)) return false;
+    const candidate = crypto.createHash('sha256')
+        .update(String(socket.handshake.auth?.viewerPassword || ''))
+        .digest();
+    const expected = Buffer.from(PRIVATE_VIEWER_PASSWORD_HASH, 'hex');
+    return candidate.length === expected.length && crypto.timingSafeEqual(candidate, expected);
+}
+
 function maskContact(value) {
     const contact = String(value || '').trim();
     if (!contact) return '';
@@ -169,6 +179,14 @@ function viewerRsvp(item) {
 }
 
 function viewerVisitor(item) {
+    const ip = String(item.ip || '').replace(/^::ffff:/, '');
+    const ipv4 = ip.split('.');
+    if (ipv4.length === 4) return { ...item, ip: `${ipv4[0]}.${ipv4[1]}.*.*` };
+    const ipv6 = ip.split(':').filter(Boolean);
+    return { ...item, ip: ipv6.length ? `${ipv6.slice(0, 2).join(':')}:****` : '未知IP' };
+}
+
+function privateViewerVisitor(item) {
     return { ...item, ip: String(item.ip || '').replace(/^::ffff:/, '') || '未知IP' };
 }
 
@@ -390,8 +408,14 @@ function broadcastCommitted(eventName, result) {
     const adminOnlyEvents = new Set(['newRsvp', 'newVisitor', 'newFoodPref', 'newGameScore']);
     if (adminOnlyEvents.has(eventName)) {
         io.to('admins').emit(eventName, result.item);
-        if (eventName === 'newRsvp') io.to('viewers').emit(eventName, viewerRsvp(result.item));
-        if (eventName === 'newVisitor') io.to('viewers').emit(eventName, viewerVisitor(result.item));
+        if (eventName === 'newRsvp') {
+            io.to('viewers').emit(eventName, viewerRsvp(result.item));
+            io.to('private-viewers').emit(eventName, result.item);
+        }
+        if (eventName === 'newVisitor') {
+            io.to('viewers').emit(eventName, viewerVisitor(result.item));
+            io.to('private-viewers').emit(eventName, privateViewerVisitor(result.item));
+        }
     } else if (eventName === 'newSeatSelect') {
         io.to('admins').emit(eventName, result.item);
         io.except('admins').emit(eventName, { seat: result.item.seat });
@@ -619,7 +643,7 @@ io.on('connection', socket => {
     if (isAdmin) {
         socket.join('admins');
     } else if (socketIsViewer(socket)) {
-        socket.join('viewers');
+        socket.join(socketIsPrivateViewer(socket) ? 'private-viewers' : 'viewers');
     } else {
         const visitorMutationId = normalizeClientMutationId(socket.handshake.auth?.visitorId)
             || `socket-${socket.id}`;
@@ -641,15 +665,17 @@ io.on('connection', socket => {
             return;
         }
         if (socketIsViewer(socket)) {
+            const privateViewer = socketIsPrivateViewer(socket);
             socket.emit('allData', {
-                rsvp: data.rsvp.map(viewerRsvp),
+                rsvp: privateViewer ? data.rsvp : data.rsvp.map(viewerRsvp),
                 wishes: data.wishes,
                 treeWishes: data.treeWishes,
-                visitors: data.visitors.map(viewerVisitor),
+                visitors: privateViewer ? data.visitors.map(privateViewerVisitor) : data.visitors.map(viewerVisitor),
                 foodPrefs: [],
                 seatSelections: [],
                 gameScores: []
             });
+            socket.emit('viewerAuth', { authorized: privateViewer });
             return;
         }
         socket.emit('allData', data);
