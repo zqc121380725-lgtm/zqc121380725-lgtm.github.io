@@ -566,15 +566,15 @@
     <script src="vendor/socket.io.min.js?v=4.8.1"></script>
     <script>
         const liveApiUrl = String(window.LIVE_API_URL || 'https://wedding-invitation-live.onrender.com').replace(/\/$/, '');
-        let adminToken = '';
-        try { adminToken = sessionStorage.getItem('wedding-admin-token') || ''; } catch (error) {}
-        adminToken = '__public_view__';
-        if (!adminToken) {
-            adminToken = window.prompt('请输入 Render 环境变量 ADMIN_TOKEN（仅保存在当前标签页）') || '';
-            try { if (adminToken) sessionStorage.setItem('wedding-admin-token', adminToken); } catch (error) {}
+        const adminToken = '__public_view__';
+        let viewerPassword = '';
+        try { viewerPassword = sessionStorage.getItem('wedding-viewer-password') || ''; } catch (error) {}
+        if (!viewerPassword) {
+            viewerPassword = window.prompt('请输入后台查看密码（用于查看完整电话和 IP）') || '';
+            try { if (viewerPassword) sessionStorage.setItem('wedding-viewer-password', viewerPassword); } catch (error) {}
         }
         const socket = io(liveApiUrl, {
-            auth: { adminToken },
+            auth: { adminToken, viewerPassword },
             transports: ['polling', 'websocket'],
             timeout: 10000
         });
@@ -588,8 +588,13 @@
             socket.emit('getStats');
         });
         socket.on('adminError', data => {
-            try { sessionStorage.removeItem('wedding-admin-token'); } catch (error) {}
-            alert((data && data.error ? data.error : '管理令牌无效') + '。请刷新页面重新输入。');
+            alert(data && data.error ? data.error : '后台读取失败');
+        });
+        socket.on('viewerAuth', data => {
+            if (!data || !data.authorized) {
+                try { sessionStorage.removeItem('wedding-viewer-password'); } catch (error) {}
+                alert('查看密码错误。电话和 IP 已隐藏，请刷新页面重新输入。');
+            }
         });
 
         // 初始化数据
