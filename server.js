@@ -152,6 +152,34 @@ function socketIsViewer(socket) {
     return socket.handshake.auth?.adminToken === '__public_view__';
 }
 
+function maskContact(value) {
+    const contact = String(value || '').trim();
+    if (!contact) return '';
+    if (contact.includes('@')) {
+        const [name, domain] = contact.split('@');
+        return `${name.slice(0, 1) || '*'}***@${domain || '***'}`;
+    }
+    const digits = contact.replace(/\D/g, '');
+    if (digits.length >= 7) return `${digits.slice(0, 3)}****${digits.slice(-4)}`;
+    return contact.length > 2 ? `${contact.slice(0, 1)}***${contact.slice(-1)}` : '**';
+}
+
+function maskIp(value) {
+    const ip = String(value || '').replace(/^::ffff:/, '');
+    const ipv4 = ip.split('.');
+    if (ipv4.length === 4) return `${ipv4[0]}.${ipv4[1]}.*.*`;
+    const ipv6 = ip.split(':').filter(Boolean);
+    return ipv6.length ? `${ipv6.slice(0, 2).join(':')}:****` : '未知IP';
+}
+
+function viewerRsvp(item) {
+    return { ...item, contact: maskContact(item.contact) };
+}
+
+function viewerVisitor(item) {
+    return { ...item, ip: maskIp(item.ip) };
+}
+
 function stats(state = data) {
     const acceptedEntries = state.rsvp.filter(item => item.status === 'accept');
     return {
@@ -370,6 +398,8 @@ function broadcastCommitted(eventName, result) {
     const adminOnlyEvents = new Set(['newRsvp', 'newVisitor', 'newFoodPref', 'newGameScore']);
     if (adminOnlyEvents.has(eventName)) {
         io.to('admins').emit(eventName, result.item);
+        if (eventName === 'newRsvp') io.to('viewers').emit(eventName, viewerRsvp(result.item));
+        if (eventName === 'newVisitor') io.to('viewers').emit(eventName, viewerVisitor(result.item));
     } else if (eventName === 'newSeatSelect') {
         io.to('admins').emit(eventName, result.item);
         io.except('admins').emit(eventName, { seat: result.item.seat });
@@ -596,7 +626,9 @@ io.on('connection', socket => {
     const isAdmin = socketIsAdmin(socket);
     if (isAdmin) {
         socket.join('admins');
-    } else if (!socketIsViewer(socket)) {
+    } else if (socketIsViewer(socket)) {
+        socket.join('viewers');
+    } else {
         const visitorMutationId = normalizeClientMutationId(socket.handshake.auth?.visitorId)
             || `socket-${socket.id}`;
         addRecordMutation('visitors', {}, {
@@ -618,10 +650,10 @@ io.on('connection', socket => {
         }
         if (socketIsViewer(socket)) {
             socket.emit('allData', {
-                rsvp: [],
+                rsvp: data.rsvp.map(viewerRsvp),
                 wishes: data.wishes,
                 treeWishes: data.treeWishes,
-                visitors: [],
+                visitors: data.visitors.map(viewerVisitor),
                 foodPrefs: [],
                 seatSelections: [],
                 gameScores: []

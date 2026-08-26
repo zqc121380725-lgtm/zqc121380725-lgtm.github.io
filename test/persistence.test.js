@@ -108,6 +108,18 @@ function connectGuest(port, suffix = 'guest') {
     });
 }
 
+function connectViewer(port) {
+    return new Promise((resolve, reject) => {
+        const socket = io(`http://127.0.0.1:${port}`, {
+            reconnection: false,
+            timeout: 5_000,
+            auth: { adminToken: '__public_view__' }
+        });
+        socket.once('connect', () => resolve(socket));
+        socket.once('connect_error', reject);
+    });
+}
+
 function nextEvent(socket, eventName) {
     return new Promise((resolve, reject) => {
         const timeout = setTimeout(
@@ -269,10 +281,12 @@ test('管理数据受令牌保护，HTTP 互动回退完整可用', async t => {
     let running;
     let adminSocket;
     let guestSocket;
+    let viewerSocket;
 
     t.after(async () => {
         if (adminSocket) adminSocket.disconnect();
         if (guestSocket) guestSocket.disconnect();
+        if (viewerSocket) viewerSocket.disconnect();
         await stopServer(running);
         fs.rmSync(tempDir, { recursive: true, force: true });
     });
@@ -280,6 +294,7 @@ test('管理数据受令牌保护，HTTP 互动回退完整可用', async t => {
     running = await startServer(port, dataFile, backupDirectory);
     adminSocket = await connect(port, 'security-admin');
     guestSocket = await connectGuest(port, 'security-guest');
+    viewerSocket = await connectViewer(port);
 
     const adminError = nextEvent(guestSocket, 'adminError');
     guestSocket.emit('getAllData');
@@ -288,6 +303,7 @@ test('管理数据受令牌保护，HTTP 互动回退完整可用', async t => {
     let leakedRsvp = false;
     guestSocket.on('newRsvp', () => { leakedRsvp = true; });
     const adminRsvp = nextEvent(adminSocket, 'newRsvp');
+    const viewerRsvp = nextEvent(viewerSocket, 'newRsvp');
     const rsvpResponse = await fetch(`http://127.0.0.1:${port}/api/rsvp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -301,8 +317,17 @@ test('管理数据受令牌保护，HTTP 互动回退完整可用', async t => {
     });
     assert.equal(rsvpResponse.status, 201);
     assert.equal((await adminRsvp).contact, 'private-contact');
+    assert.notEqual((await viewerRsvp).contact, 'private-contact');
     await delay(100);
     assert.equal(leakedRsvp, false);
+
+    const viewerDataEvent = nextEvent(viewerSocket, 'allData');
+    viewerSocket.emit('getAllData');
+    const viewerData = await viewerDataEvent;
+    assert.equal(viewerData.rsvp.length, 1);
+    assert.notEqual(viewerData.rsvp[0].contact, 'private-contact');
+    assert.ok(viewerData.visitors.length >= 1);
+    assert.ok(viewerData.visitors.every(visitor => !String(visitor.ip).match(/^(?:\d{1,3}\.){3}\d{1,3}$/)));
 
     const routes = [
         ['/api/tree-wishes', { name: '树', message: '幸福', color: '#fce4ec', clientMutationId: 'tree-http-001' }],
