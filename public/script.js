@@ -338,7 +338,7 @@ function resetPageScroll() {
 
 // ========== 倒计时 ==========
 function updateCountdown() {
-    var weddingDate = new Date('2026-09-29T12:00:00');
+    var weddingDate = new Date('2026-10-03T12:00:00');
     var now = new Date();
     var diff = weddingDate - now;
 
